@@ -1,46 +1,47 @@
 # deploy.ps1
 # Script to push to GitHub and deploy to Netlify using local CLI sessions
 
-$gitPath = "C:\Program Files\Git\cmd\git.exe"
-$ghPath = "C:\Program Files\GitHub CLI\gh.exe"
+# Prepend Git and gh to Path
+$env:PATH = "C:\Program Files\Git\cmd;C:\Program Files\GitHub CLI;" + $env:PATH
 
 Write-Host "Memulai proses integrasi..."
 
 # 1. Pastikan Git diinisialisasi
 if (-not (Test-Path .git)) {
     Write-Host "Menginisialisasi repositori Git lokal..."
-    & $gitPath init
-    & $gitPath config user.name "Yoohash-noob"
-    & $gitPath config user.email "arpanmualiefsaprizal@gmail.com"
+    git init
+    git config user.name "Yoohash-noob"
+    git config user.email "arpanmualiefsaprizal@gmail.com"
 }
 
-& $gitPath branch -M main
+git branch -M main
 
 # 2. Add files dan Commit
 Write-Host "Menambahkan file dan membuat commit pertama..."
-& $gitPath add .
-& $gitPath commit -m "Initial commit: BI Dashboard & Planning"
+git add .
+git commit -m "Initial commit: BI Dashboard & Planning"
 
 # 3. Buat Repositori GitHub menggunakan gh CLI
 $repoName = "bi-dashboard-analytics"
 Write-Host "Memeriksa repositori di GitHub..."
-$repoCheck = & $ghPath repo view "Yoohash-noob/$repoName" 2>&1
+$repoCheck = gh repo view "Yoohash-noob/$repoName" 2>&1
 
 if ($repoCheck -match "could not resolve to a Repository") {
     Write-Host "Membuat repositori baru '$repoName' di GitHub..."
-    & $ghPath repo create $repoName --public --confirm
+    gh repo create $repoName --public --confirm
 } else {
     Write-Host "Repositori '$repoName' sudah ada di GitHub."
 }
 
 # 4. Hubungkan remote dan Push
 Write-Host "Menghubungkan remote dan push ke GitHub..."
-& $gitPath remote remove origin 2>$null
-& $gitPath remote add origin "https://github.com/Yoohash-noob/$repoName.git"
+git remote remove origin 2>$null
+git remote add origin "https://github.com/Yoohash-noob/$repoName.git"
 
-Write-Host "Mengunggah kode ke GitHub..."
-& $gitPath push -u origin main --force
+Write-Host "Mengunggah kode ke GitHub (proses ini memakan waktu beberapa detik)..."
+git push -u origin main --force
 $githubLink = "https://github.com/Yoohash-noob/$repoName"
+Write-Host "Berhasil diunggah ke GitHub: $githubLink"
 
 # 5. Deployment ke Netlify
 Write-Host "Mendeploy ke Netlify..."
