@@ -1,0 +1,259 @@
+<Create xmlns="http://schemas.microsoft.com/analysisservices/2003/engine">
+    <ParentObject>
+        <DatabaseID>SalesAnalysisCube</DatabaseID>
+    </ParentObject>
+    <ObjectDefinition>
+        <Database xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+            <ID>SalesAnalysisCube</ID>
+            <Name>SalesAnalysisCube</Name>
+            <Description>SSAS Multidimensional Cube for Sales Analytics</Description>
+            <DataSources>
+                <DataSource xsi:type="RelationalDataSource">
+                    <ID>SalesDW_DS</ID>
+                    <Name>SalesDW_DS</Name>
+                    <ConnectionString>Provider=MSOLEDBSQL;Data Source=localhost;Initial Catalog=SalesDW;Integrated Security=SSPI;</ConnectionString>
+                </DataSource>
+            </DataSources>
+            
+            <!-- Dimensions -->
+            <Dimensions>
+                <!-- Customer Dimension -->
+                <Dimension>
+                    <ID>DimCustomer</ID>
+                    <Name>Customer</Name>
+                    <Attributes>
+                        <Attribute>
+                            <ID>CustomerKey</ID>
+                            <Name>Customer Name</Name>
+                            <Usage>Key</Usage>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>Integer</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimCustomer</TableID>
+                                        <ColumnID>CustomerKey</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                            <NameColumn>
+                                <DataType>WChar</DataType>
+                                <Source xsi:type="ColumnBinding">
+                                    <TableID>dbo_DimCustomer</TableID>
+                                    <ColumnID>CustomerName</ColumnID>
+                                </Source>
+                            </NameColumn>
+                        </Attribute>
+                    </Attributes>
+                </Dimension>
+                
+                <!-- Product Dimension -->
+                <Dimension>
+                    <ID>DimProduct</ID>
+                    <Name>Product</Name>
+                    <Attributes>
+                        <Attribute>
+                            <ID>ProductKey</ID>
+                            <Name>Product Name</Name>
+                            <Usage>Key</Usage>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>Integer</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimProduct</TableID>
+                                        <ColumnID>ProductKey</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                            <NameColumn>
+                                <DataType>WChar</DataType>
+                                <Source xsi:type="ColumnBinding">
+                                    <TableID>dbo_DimProduct</TableID>
+                                    <ColumnID>ProductName</ColumnID>
+                                </Source>
+                            </NameColumn>
+                        </Attribute>
+                        <Attribute>
+                            <ID>Category</ID>
+                            <Name>Category</Name>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>WChar</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimProduct</TableID>
+                                        <ColumnID>Category</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                        </Attribute>
+                        <Attribute>
+                            <ID>SubCategory</ID>
+                            <Name>Sub Category</Name>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>WChar</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimProduct</TableID>
+                                        <ColumnID>SubCategory</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                        </Attribute>
+                    </Attributes>
+                </Dimension>
+                
+                <!-- Location Dimension -->
+                <Dimension>
+                    <ID>DimLocation</ID>
+                    <Name>Location</Name>
+                    <Attributes>
+                        <Attribute>
+                            <ID>LocationKey</ID>
+                            <Name>City</Name>
+                            <Usage>Key</Usage>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>Integer</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimLocation</TableID>
+                                        <ColumnID>LocationKey</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                            <NameColumn>
+                                <DataType>WChar</DataType>
+                                <Source xsi:type="ColumnBinding">
+                                    <TableID>dbo_DimLocation</TableID>
+                                    <ColumnID>City</ColumnID>
+                                </Source>
+                            </NameColumn>
+                        </Attribute>
+                        <Attribute>
+                            <ID>State</ID>
+                            <Name>State</Name>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>WChar</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimLocation</TableID>
+                                        <ColumnID>State</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                        </Attribute>
+                        <Attribute>
+                            <ID>Region</ID>
+                            <Name>Region</Name>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>WChar</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimLocation</TableID>
+                                        <ColumnID>Region</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                        </Attribute>
+                    </Attributes>
+                </Dimension>
+
+                <!-- Date Dimension -->
+                <Dimension>
+                    <ID>DimDate</ID>
+                    <Name>Date</Name>
+                    <Attributes>
+                        <Attribute>
+                            <ID>DateKey</ID>
+                            <Name>Date</Name>
+                            <Usage>Key</Usage>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>Integer</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimDate</TableID>
+                                        <ColumnID>DateKey</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                            <NameColumn>
+                                <DataType>WChar</DataType>
+                                <Source xsi:type="ColumnBinding">
+                                    <TableID>dbo_DimDate</TableID>
+                                    <ColumnID>FullDate</ColumnID>
+                                </Source>
+                            </NameColumn>
+                        </Attribute>
+                        <Attribute>
+                            <ID>CalendarYear</ID>
+                            <Name>Year</Name>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>Integer</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimDate</TableID>
+                                        <ColumnID>CalendarYear</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                        </Attribute>
+                        <Attribute>
+                            <ID>CalendarQuarter</ID>
+                            <Name>Quarter</Name>
+                            <KeyColumns>
+                                <KeyColumn>
+                                    <DataType>Integer</DataType>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_DimDate</TableID>
+                                        <ColumnID>CalendarQuarter</ColumnID>
+                                    </Source>
+                                </KeyColumn>
+                            </KeyColumns>
+                        </Attribute>
+                    </Attributes>
+                </Dimension>
+            </Dimensions>
+
+            <!-- Cubes -->
+            <Cubes>
+                <Cube>
+                    <ID>SalesCube</ID>
+                    <Name>SalesCube</Name>
+                    <MeasureGroups>
+                        <MeasureGroup>
+                            <ID>FactSales</ID>
+                            <Name>Sales Facts</Name>
+                            <Measures>
+                                <Measure>
+                                    <ID>Quantity</ID>
+                                    <Name>Total Quantity</Name>
+                                    <AggregateFunction>Sum</AggregateFunction>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_FactSales</TableID>
+                                        <ColumnID>Quantity</ColumnID>
+                                    </Source>
+                                </Measure>
+                                <Measure>
+                                    <ID>Revenue</ID>
+                                    <Name>Total Revenue</Name>
+                                    <AggregateFunction>Sum</AggregateFunction>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_FactSales</TableID>
+                                        <ColumnID>Revenue</ColumnID>
+                                    </Source>
+                                </Measure>
+                                <Measure>
+                                    <ID>Profit</ID>
+                                    <Name>Total Profit</Name>
+                                    <AggregateFunction>Sum</AggregateFunction>
+                                    <Source xsi:type="ColumnBinding">
+                                        <TableID>dbo_FactSales</TableID>
+                                        <ColumnID>Profit</ColumnID>
+                                    </Source>
+                                </Measure>
+                            </Measures>
+                        </MeasureGroup>
+                    </MeasureGroups>
+                </Cube>
+            </Cubes>
+        </Database>
+    </ObjectDefinition>
+</Create>
