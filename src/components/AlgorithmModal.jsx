@@ -446,8 +446,87 @@ def segment_customers(df, k_clusters=4):
     
     return customer_features, original_centroids`
         };
+      case 'reporting':
+        return {
+          title: '📈 Reporting Services (Dashboard & Visualisasi)',
+          teori: (
+            <div>
+              <h3>Konsep Reporting & Dashboard BI</h3>
+              <p>
+                <strong>Reporting Services</strong> mengubah data mentah menjadi informasi visual yang mudah dipahami oleh pengambil keputusan.
+                Dashboard menyajikan KPI (Key Performance Indicators) dan grafik interaktif secara real-time.
+              </p>
+              <div className="theory-card">
+                <h4>Key Performance Indicators (KPI)</h4>
+                <ul>
+                  <li><strong>Total Revenue:</strong> Σ Revenue — jumlah seluruh pendapatan dari semua transaksi.</li>
+                  <li><strong>Total Profit:</strong> Σ Profit — jumlah seluruh keuntungan bersih.</li>
+                  <li><strong>Profit Margin (%):</strong> (Σ Profit / Σ Revenue) × 100 — rasio keuntungan terhadap pendapatan.</li>
+                  <li><strong>Average Order Value:</strong> Σ Revenue / Jumlah Transaksi Unik — rata-rata nilai pesanan.</li>
+                </ul>
+              </div>
+              <div className="theory-card">
+                <h4>Teknik Visualisasi Data</h4>
+                <ul>
+                  <li><strong>Bar Chart (Grafik Batang):</strong> Membandingkan nilai antar kategori secara visual. Sumbu X = Kategori, Sumbu Y = Nilai metrik.</li>
+                  <li><strong>Line Chart (Grafik Garis):</strong> Menampilkan tren data sepanjang waktu. Ideal untuk melihat pola naik/turun penjualan bulanan.</li>
+                  <li><strong>Distribusi (Donut/Pie):</strong> Menunjukkan proporsi kontribusi setiap segmen (Region, Kategori) terhadap total.</li>
+                  <li><strong>Top-N Analysis:</strong> Mengurutkan entitas (produk, pelanggan) berdasarkan metrik tertentu untuk mengidentifikasi kontributor utama.</li>
+                </ul>
+              </div>
+            </div>
+          ),
+          code: `# Implementasi Reporting Dashboard di Python menggunakan Pandas & Matplotlib
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def generate_dashboard_report(df):
+    """
+    Menghasilkan metrik KPI dan visualisasi untuk dashboard BI
+    """
+    # 1. Hitung KPI Utama
+    total_revenue = df['Revenue'].sum()
+    total_profit = df['Profit'].sum()
+    total_customers = df['Customer_Name'].nunique()
+    total_orders = df['Order_ID'].nunique()
+    profit_margin = (total_profit / total_revenue) * 100 if total_revenue else 0
+    avg_order_value = total_revenue / total_orders if total_orders else 0
+    
+    kpi = {
+        'Total Revenue': total_revenue,
+        'Total Profit': total_profit,
+        'Profit Margin (%)': round(profit_margin, 2),
+        'Total Customers': total_customers,
+        'Total Orders': total_orders,
+        'Avg Order Value': round(avg_order_value, 2)
+    }
+    
+    # 2. Revenue per Kategori (Bar Chart)
+    category_revenue = df.groupby('Category')['Revenue'].sum().sort_values(ascending=False)
+    
+    # 3. Tren Penjualan Bulanan (Line Chart)
+    df['Month'] = pd.to_datetime(df['Order_Date']).dt.to_period('M')
+    monthly_trend = df.groupby('Month')['Revenue'].sum()
+    
+    # 4. Top 10 Produk Terlaris
+    top_products = df.groupby('Product_Name')['Revenue'].sum() \\
+                     .sort_values(ascending=False).head(10)
+    
+    # 5. Distribusi per Region
+    region_dist = df.groupby('Region')['Revenue'].sum()
+    
+    return {
+        'kpi': kpi,
+        'category_revenue': category_revenue,
+        'monthly_trend': monthly_trend,
+        'top_products': top_products,
+        'region_distribution': region_dist
+    }`
+        };
       default:
         return { title: '', teori: '', code: '' };
+
     }
   };
 
