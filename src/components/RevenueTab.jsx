@@ -61,10 +61,10 @@ const RevenueTab = ({ revenue, onWithdraw, withdrawHistory }) => {
   return (
     <div className="p-6 space-y-6">
       {/* Overview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm text-center glass-card">
+      <div className="kpi-grid">
+        <div className="glass-card section-block text-center glass-card">
           <div className="text-sm text-slate-400 mb-1">Total Saldo Pendapatan</div>
-          <div className="text-2xl font-bold text-emerald-400 mb-4">{formatRupiah(revenue)}</div>
+          <div className="section-title text-emerald-400 mb-4">{formatRupiah(revenue)}</div>
           <button 
             className="login-btn" 
             style={{ width: '100%', marginTop: 0, background: 'linear-gradient(135deg, #10b981, #059669)' }}
@@ -80,17 +80,17 @@ const RevenueTab = ({ revenue, onWithdraw, withdrawHistory }) => {
           )}
         </div>
 
-        <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm text-center">
+        <div className="glass-card section-block text-center">
           <div className="text-sm text-slate-400 mb-1">Total Tayangan Iklan</div>
-          <div className="text-2xl font-bold text-white">{(revenue / 1500).toFixed(0)}x</div>
+          <div className="section-title text-white">{(revenue / 1500).toFixed(0)}x</div>
           <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)', display: 'block', marginTop: '0.5rem' }}>
             Tarif Iklan: Rp 1.500 per tayang
           </span>
         </div>
 
-        <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm text-center">
+        <div className="glass-card section-block text-center">
           <div className="text-sm text-slate-400 mb-1">Status Kemitraan</div>
-          <div className="text-2xl font-bold text-sky-400">Penerbit Utama (Publisher)</div>
+          <div className="section-title text-sky-400">Penerbit Utama (Publisher)</div>
           <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)', display: 'block', marginTop: '0.5rem' }}>
             Metode Pembayaran: DANA, GoPay, OVO, Bank
           </span>
@@ -98,7 +98,7 @@ const RevenueTab = ({ revenue, onWithdraw, withdrawHistory }) => {
       </div>
 
       {/* History Table */}
-      <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm">
+      <div className="glass-card section-block">
         <h3 className="text-lg font-semibold mb-4">Riwayat Penarikan Saldo (Withdrawal)</h3>
         <div className="overflow-x-auto">
           {withdrawHistory.length === 0 ? (

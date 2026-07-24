@@ -1,3 +1,4 @@
+@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* 1. Reset & base */
@@ -2959,6 +2960,7 @@ option {
   flex: 1;
   position: relative;
 }
+
 
 
 

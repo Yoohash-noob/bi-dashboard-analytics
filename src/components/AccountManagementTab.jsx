@@ -209,7 +209,7 @@ const AccountManagementTab = () => {
                         Akun Utama (Proteksi)
                       </span>
                     ) : (
-                      <div className="flex gap-2">
+                      <div className="btn-group">
                         {acc.role === 'user' ? (
                           <button 
                             className="acct-btn-promote"

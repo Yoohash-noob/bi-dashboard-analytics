@@ -39,13 +39,8 @@ const colors = ['#4ea8de','#7c3aed','#f72585','#2dd4bf','#fbbf24','#06d6a0','#e7
 
 // ── Styled download button ────────────────────────────────────────────────────
 function DownloadBtn({ onClick, label, icon = '⬇️', variant = 'csv' }) {
-  const base = 'inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all duration-200 border';
-  const styles = {
-    csv: 'bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-300 border-emerald-600/40 hover:border-emerald-500',
-    png: 'bg-sky-600/20 hover:bg-sky-600/40 text-sky-300 border-sky-600/40 hover:border-sky-500',
-  };
   return (
-    <button onClick={onClick} className={`${base} ${styles[variant]}`} title={label}>
+    <button onClick={onClick} className="btn-export-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '0.4rem 0.75rem', fontSize: '0.8rem' }} title={label}>
       {icon} {label}
     </button>
   );
@@ -54,15 +49,15 @@ function DownloadBtn({ onClick, label, icon = '⬇️', variant = 'csv' }) {
 // ── Chart card wrapper with download button ───────────────────────────────────
 function ChartCard({ title, children, onDownloadPNG, onDownloadCSV, height = 350 }) {
   return (
-    <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm" style={{ height: `${height}px` }}>
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        <div className="flex gap-1.5">
+    <div className="glass-card" style={{ height: `${height}px`, display: 'flex', flexDirection: 'column' }}>
+      <div className="section-header" style={{ marginBottom: '12px' }}>
+        <h3 className="chart-title" style={{ marginBottom: 0 }}>{title}</h3>
+        <div className="btn-group">
           {onDownloadCSV && <DownloadBtn onClick={onDownloadCSV} label="CSV" icon="📥" variant="csv" />}
           {onDownloadPNG && <DownloadBtn onClick={onDownloadPNG} label="PNG" icon="🖼️" variant="png" />}
         </div>
       </div>
-      <div style={{ height: `${height - 80}px` }}>
+      <div style={{ flex: 1, position: 'relative' }}>
         {children}
       </div>
     </div>
@@ -166,18 +161,18 @@ export default function ReportingTab({ data }) {
   };
 
   return (
-    <div className="p-6 space-y-8 text-slate-200 font-inter">
+    <div className="tab-content">
       {/* Header */}
-      <div className="flex flex-wrap justify-between items-center gap-3">
-        <h1 className="text-2xl font-bold">Reporting Dashboard</h1>
-        <div className="flex gap-2">
+      <div className="section-header">
+        <h1 className="section-title">Reporting Dashboard</h1>
+        <div className="btn-group">
           <DownloadBtn onClick={handleExportKPICSV} label="KPI Summary" icon="📊" variant="csv" />
           <DownloadBtn onClick={handleExportAllCSV} label="Full Data CSV" icon="📥" variant="csv" />
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      <div className="kpi-grid">
         {[
           { label: 'Total Revenue', value: formatCurrency(kpis.totalRevenue) },
           { label: 'Total Profit', value: formatCurrency(kpis.totalProfit) },
@@ -186,15 +181,15 @@ export default function ReportingTab({ data }) {
           { label: 'Avg Order Value', value: formatCurrency(kpis.avgOrderValue) },
           { label: 'Total Orders', value: kpis.totalOrders?.toLocaleString() }
         ].map((kpi, i) => (
-          <div key={i} className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 shadow-sm text-center">
-            <div className="text-sm text-slate-400 mb-1">{kpi.label}</div>
-            <div className="text-xl font-bold text-white">{kpi.value}</div>
+          <div key={i} className="kpi-card glass-card">
+            <div className="kpi-label">{kpi.label}</div>
+            <div className="kpi-value">{kpi.value}</div>
           </div>
         ))}
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="chart-grid">
         <ChartCard
           title="Monthly Revenue Trend"
           onDownloadPNG={() => downloadChartPNG(monthlyRef, 'monthly_trend')}
@@ -278,28 +273,28 @@ export default function ReportingTab({ data }) {
       </div>
 
       {/* Top Customers Table */}
-      <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold">Top 20 Customers</h3>
+      <div className="glass-card section-block" style={{ marginTop: '2rem' }}>
+        <div className="section-header">
+          <h3 className="section-title" style={{ fontSize: '1.25rem', paddingLeft: 0, borderLeft: 'none', background: 'none', WebkitTextFillColor: 'initial', color: '#f1f5f9' }}>Top 20 Customers</h3>
           <DownloadBtn onClick={handleDownloadTopCustomers} label="CSV" icon="📥" variant="csv" />
         </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+        <div className="data-table-wrapper">
+          <table className="data-table">
             <thead>
-              <tr className="bg-slate-800">
-                <th className="p-3 border-b border-slate-700 font-medium">#</th>
-                <th className="p-3 border-b border-slate-700 font-medium">Customer Name</th>
-                <th className="p-3 border-b border-slate-700 font-medium">Orders</th>
-                <th className="p-3 border-b border-slate-700 font-medium">Total Revenue</th>
+              <tr>
+                <th>#</th>
+                <th>Customer Name</th>
+                <th>Orders</th>
+                <th>Total Revenue</th>
               </tr>
             </thead>
             <tbody>
               {topCustomers.map((c, i) => (
-                <tr key={i} className="hover:bg-slate-700/50 transition-colors">
-                  <td className="p-3 border-b border-slate-700/50 text-slate-400">{i + 1}</td>
-                  <td className="p-3 border-b border-slate-700/50">{c.name}</td>
-                  <td className="p-3 border-b border-slate-700/50">{c.orders}</td>
-                  <td className="p-3 border-b border-slate-700/50">{formatCurrency(c.revenue)}</td>
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{c.name}</td>
+                  <td>{c.orders}</td>
+                  <td>{formatCurrency(c.revenue)}</td>
                 </tr>
               ))}
             </tbody>

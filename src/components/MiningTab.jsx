@@ -152,10 +152,10 @@ export default function MiningTab({ data }) {
   };
 
   return (
-    <div className="p-6 space-y-8 text-slate-200 font-inter">
+    <div className="tab-content">
       {/* Sales Forecasting */}
-      <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
-        <div className="flex flex-wrap justify-between items-center mb-4 gap-3">
+      <section className="glass-card section-block">
+        <div className="section-header">
           <h2 className="text-xl font-semibold">Sales Forecasting</h2>
           <div className="flex items-center gap-3">
             <select 
@@ -182,7 +182,7 @@ export default function MiningTab({ data }) {
       </section>
 
       {/* Correlation Matrix */}
-      <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+      <section className="glass-card section-block">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Correlation Matrix</h2>
           <DownloadBtn onClick={handleDownloadCorrelationCSV} label="CSV" icon="📥" variant="csv" />
@@ -218,15 +218,15 @@ export default function MiningTab({ data }) {
       </section>
 
       {/* Market Basket Analysis */}
-      <section className="bg-slate-800/50 p-6 rounded-xl border border-slate-700">
+      <section className="glass-card section-block">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold">Market Basket Analysis (Top 10 Pairs)</h2>
-          <div className="flex gap-2">
+          <div className="btn-group">
             <DownloadBtn onClick={() => downloadChartPNG(basketRef, 'market_basket_chart')} label="PNG" icon="🖼️" variant="png" />
             <DownloadBtn onClick={handleDownloadBasketCSV} label="CSV" icon="📥" variant="csv" />
           </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="chart-grid">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-sm">
               <thead>

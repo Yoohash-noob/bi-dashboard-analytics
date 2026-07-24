@@ -153,8 +153,8 @@ export default function ClusteringTab({ data }) {
   };
 
   return (
-    <div className="p-6 space-y-8 text-slate-200 font-inter">
-      <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm">
+    <div className="tab-content">
+      <div className="glass-card section-block">
         <h2 className="text-xl font-bold mb-4">Clustering Configuration</h2>
         <div className="flex flex-wrap gap-4 items-end">
           <div>
@@ -207,12 +207,12 @@ export default function ClusteringTab({ data }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm flex flex-col">
+      <div className="chart-grid">
+        <div className="lg:col-span-2 glass-card section-block flex flex-col">
           {/* Chart header with download buttons */}
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Cluster Scatter Plot</h3>
-            <div className="flex gap-2">
+            <div className="btn-group">
               <DownloadBtn onClick={handleDownloadChart} label="PNG" icon="🖼️" variant="png" />
               <DownloadBtn onClick={handleDownloadCSV} label="CSV Data" icon="📥" variant="csv" />
             </div>
@@ -242,7 +242,7 @@ export default function ClusteringTab({ data }) {
           </div>
         </div>
 
-        <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 shadow-sm">
+        <div className="glass-card section-block">
           <h3 className="text-lg font-semibold mb-4">Algorithm Info</h3>
           <ul className="space-y-3 mb-8 text-sm text-slate-300">
             <li className="flex justify-between border-b border-slate-700/50 pb-2">
