@@ -6,6 +6,7 @@ import AdModal from './components/AdModal';
 import RevenueTab from './components/RevenueTab';
 import AccountManagementTab from './components/AccountManagementTab';
 import AdminHomeTab from './components/AdminHomeTab';
+import UserHomeTab from './components/UserHomeTab';
 import IntegrationTab from './components/IntegrationTab';
 import AnalysisTab from './components/AnalysisTab';
 import MiningTab from './components/MiningTab';
@@ -217,7 +218,7 @@ function App() {
     if (user && user.role === 'admin') {
       setActiveTab('adminhome');
     } else {
-      setActiveTab('analysis');
+      setActiveTab('userhome');
     }
   };
 
@@ -274,7 +275,7 @@ function App() {
     if (loggedInUser.role === 'admin') {
       setActiveTab('adminhome');
     } else {
-      setActiveTab('analysis');
+      setActiveTab('userhome');
     }
   };
 
@@ -316,8 +317,9 @@ function App() {
       { key: 'accounts', label: 'Manajemen Akun', icon: '👥' }
     );
   } else {
-    // User POV: always show 5 BI technique tabs
+    // User POV: always show 5 BI technique tabs + userhome
     allTabs.push(
+      { key: 'userhome', label: 'Beranda User', icon: '🏠' },
       { key: 'integration', label: 'Integration Services', icon: '🔄' },
       { key: 'analysis', label: 'Analysis Services', icon: '📊' },
       { key: 'mining', label: 'Data Mining', icon: '⛏️' },
@@ -504,6 +506,22 @@ function App() {
               loadSampleData={loadSampleData}
               uploadError={uploadError}
               username={user.username}
+              resetData={resetData}
+            />
+          )}
+
+          {/* User Home Dashboard */}
+          {activeTab === 'userhome' && !isAdmin && (
+            <UserHomeTab 
+              user={user}
+              rawData={rawData}
+              tokens={tokens}
+              onFileUpload={handleFileUpload}
+              loadSampleData={loadSampleData}
+              uploadError={uploadError}
+              resetData={resetData}
+              setActiveTab={setActiveTab}
+              setAdModalOpen={setShowAd}
             />
           )}
 

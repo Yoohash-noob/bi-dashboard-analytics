@@ -32,7 +32,8 @@ const AdminHomeTab = ({
   onFileUpload, 
   loadSampleData,
   uploadError,
-  username
+  username,
+  resetData
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
@@ -338,17 +339,46 @@ const AdminHomeTab = ({
               <span className="card-menu-dots">•••</span>
             </div>
             
-            <div className="upload-dropzone">
-              <div className="cloud-upload-icon">☁️</div>
-              <p className="upload-instruction">Drag & Drop your CSV/excel files here</p>
-              <p className="upload-formats">File formats: CSV, XLSX, XML, etc</p>
-              {uploadError && <div className="profile-error" style={{ margin: '0.5rem 0' }}>{uploadError}</div>}
-              
-              <label className="btn-upload-neon">
-                📤 Upload
-                <input type="file" accept=".csv" onChange={onFileUpload} style={{ display: 'none' }} />
-              </label>
-            </div>
+            {rawData ? (
+              <div className="upload-dropzone" style={{ padding: '2rem 1rem' }}>
+                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🟢</div>
+                <h3 style={{ color: '#f8fafc', fontWeight: 'bold', marginBottom: '0.5rem' }}>Dataset Aktif</h3>
+                <p style={{ color: '#94a3b8', fontSize: '0.85rem', marginBottom: '1.5rem' }}>
+                  {rawData.length.toLocaleString('id-ID')} baris data siap untuk dianalisis.
+                </p>
+                <button 
+                  onClick={resetData}
+                  style={{
+                    background: 'rgba(239, 68, 68, 0.2)',
+                    border: '1px solid rgba(239, 68, 68, 0.4)',
+                    color: '#f87171',
+                    padding: '0.6rem 1.2rem',
+                    borderRadius: '8px',
+                    fontWeight: 'bold',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.3)'}
+                  onMouseOut={(e) => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                >
+                  Tutup Data
+                </button>
+              </div>
+            ) : (
+              <div className="upload-dropzone">
+                <div className="cloud-upload-icon">☁️</div>
+                <p className="upload-instruction">Drag & Drop your CSV/excel files here</p>
+                <p className="upload-formats">File formats: CSV, XLSX, XML, etc</p>
+                {uploadError && <div className="profile-error" style={{ margin: '0.5rem 0' }}>{uploadError}</div>}
+                
+                <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                  <label className="btn-upload-neon" style={{ cursor: 'pointer' }}>
+                    📤 Upload Data
+                    <input type="file" accept=".csv" onChange={onFileUpload} style={{ display: 'none' }} />
+                  </label>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Activity Log Card */}
