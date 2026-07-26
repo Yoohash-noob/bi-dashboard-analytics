@@ -15,10 +15,10 @@ Proyek ini dibangun untuk menyelesaikan masalah analisis penjualan e-commerce ya
 ## 🏗️ Arsitektur Sistem (Data Flow)
 ```mermaid
 graph LR
-    A[Data Transaksi (CSV/OLTP)] -->|ETL Process| B(Data Warehouse)
-    B -->|Pre-Calculation| C{OLAP Cube SSAS}
-    B -->|Machine Learning| D[K-Means Clustering]
-    C --> E[React Web Dashboard]
+    A["Data Transaksi (CSV/OLTP)"] -->|ETL Process| B("Data Warehouse")
+    B -->|Pre-Calculation| C{"OLAP Cube SSAS"}
+    B -->|Machine Learning| D["K-Means Clustering"]
+    C --> E["React Web Dashboard"]
     D --> E
 ```
 
