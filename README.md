@@ -6,6 +6,29 @@ Proyek ini adalah implementasi lengkap solusi **Business Intelligence (BI)** unt
 
 ---
 
+## 🎯 Latar Belakang & Tujuan Bisnis
+Proyek ini dibangun untuk menyelesaikan masalah analisis penjualan e-commerce yang datanya tersebar dan sulit dibaca. Tujuannya adalah:
+1. Menyediakan **Single Source of Truth** melalui Data Warehouse.
+2. Memudahkan eksekutif melihat tren pendapatan dan performa produk secara *real-time*.
+3. Menerapkan algoritma **Data Mining (K-Means)** untuk membagi pelanggan ke dalam segmen (VIP, Premium, Kasual) secara otomatis agar strategi marketing lebih tepat sasaran.
+
+## 🏗️ Arsitektur Sistem (Data Flow)
+```mermaid
+graph LR
+    A[Data Transaksi (CSV/OLTP)] -->|ETL Process| B(Data Warehouse)
+    B -->|Pre-Calculation| C{OLAP Cube SSAS}
+    B -->|Machine Learning| D[K-Means Clustering]
+    C --> E[React Web Dashboard]
+    D --> E
+```
+
+## 📊 Deskripsi Dataset
+Proyek ini menggunakan sampel data transaksi penjualan nyata (disimulasikan) sebanyak **15.000 baris**. 
+*   **Format:** CSV (Comma Separated Values)
+*   **Kolom Utama:** `OrderDate`, `CustomerName`, `Location`, `Category`, `SubCategory`, `Quantity`, `UnitPrice`, `Discount`, `Profit`.
+
+---
+
 ## 📂 Struktur Folder Proyek
 Seluruh aset perancangan, skrip, dan kode terorganisasi sebagai berikut:
 ```text
