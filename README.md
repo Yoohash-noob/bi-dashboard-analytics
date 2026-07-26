@@ -2,6 +2,8 @@
 
 Proyek ini adalah implementasi lengkap solusi **Business Intelligence (BI)** untuk analisis data penjualan. Proyek ini mencakup perancangan database transaksional (OLTP), gudang data (Data Warehouse - Star Schema), alur integrasi data (ETL menggunakan SSIS), pemodelan multidimensi (Cube menggunakan SSAS), visualisasi pelaporan (SSRS), pencarian pola data (Data Mining K-Means), serta aplikasi dashboard interaktif berbasis web (React + Vite).
 
+🌍 **Live Demo:** [https://bi-dashboard-yoohash-noob.netlify.app/](https://bi-dashboard-yoohash-noob.netlify.app/)
+
 ---
 
 ## 📂 Struktur Folder Proyek
@@ -124,7 +126,7 @@ Modul data mining mengelompokkan pelanggan ke dalam **4 segmen utama** berdasark
     npm run dev
     ```
 3.  Buka browser pada alamat: **`http://localhost:5173/`**
-4.  Unggah file `product_sales_dataset_15k.csv` pada landing page untuk melihat visualisasi grafik, tabel pivot interaktif, dan simulasi K-Means client-side.
+4.  Lakukan Login (sebagai Admin atau User) lalu unggah file `product_sales_dataset_15k.csv` pada halaman Dashboard untuk melihat visualisasi grafik, tabel pivot interaktif, dan simulasi K-Means client-side.
 
 ### 2. Menjalankan Star Schema & Data Mining (Python)
 Jika Anda ingin membangun data warehouse portable (SQLite) dan menjalankan K-Means lokal via terminal:
