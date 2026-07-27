@@ -30,6 +30,7 @@ ChartJS.register(
 const UserHomeTab = ({
   user,
   rawData,
+  cleanData,
   tokens,
   onFileUpload,
   resetData,
@@ -38,9 +39,10 @@ const UserHomeTab = ({
 }) => {
   const fileInputRef = useRef(null);
 
-  // Compute Metrics if rawData exists
+  // Compute Metrics if cleanData exists (keys are trimmed by ETL)
   const metrics = useMemo(() => {
-    if (!rawData || rawData.length === 0) return null;
+    const data = cleanData || rawData;
+    if (!data || data.length === 0) return null;
     let totalRevenue = 0;
     let totalProfit = 0;
     let totalQuantity = 0;
@@ -50,7 +52,7 @@ const UserHomeTab = ({
     const categorySales = {};
     const regionSales = {};
 
-    rawData.forEach(row => {
+    data.forEach(row => {
       const rev = Number(row.Revenue) || 0;
       const prof = Number(row.Profit) || 0;
       const qty = Number(row.Quantity) || 0;
@@ -72,7 +74,7 @@ const UserHomeTab = ({
       const cat = row.Category || 'Unknown';
       categorySales[cat] = (categorySales[cat] || 0) + rev;
 
-      const reg = row.Location || 'Unknown';
+      const reg = row.Region || 'Unknown';
       regionSales[reg] = (regionSales[reg] || 0) + rev;
     });
 
@@ -83,7 +85,7 @@ const UserHomeTab = ({
       totalRevenue,
       totalProfit,
       totalQuantity,
-      totalOrders: rawData.length,
+      totalOrders: data.length,
       lineData: {
         labels: sortedMonths,
         datasets: [{
@@ -113,7 +115,7 @@ const UserHomeTab = ({
         }]
       }
     };
-  }, [rawData]);
+  }, [cleanData, rawData]);
 
   return (
     <div className="admin-dashboard-container">

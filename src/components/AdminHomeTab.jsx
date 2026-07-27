@@ -30,10 +30,10 @@ ChartJS.register(
 const AdminHomeTab = ({ 
   revenue, 
   rawData, 
+  cleanData,
   tokens, 
   accountsCount, 
   onFileUpload, 
-  loadSampleData,
   uploadError,
   username,
   resetData,
@@ -47,9 +47,10 @@ const AdminHomeTab = ({
     return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(num);
   };
 
-  // Compute Metrics if rawData exists
+  // Compute Metrics if cleanData exists (keys are trimmed by ETL)
   const metrics = useMemo(() => {
-    if (!rawData || rawData.length === 0) return null;
+    const data = cleanData || rawData;
+    if (!data || data.length === 0) return null;
     let totalRevenue = 0;
     let totalProfit = 0;
     let totalQuantity = 0;
@@ -58,7 +59,7 @@ const AdminHomeTab = ({
     const categorySales = {};
     const regionSales = {};
 
-    rawData.forEach(row => {
+    data.forEach(row => {
       const rev = Number(row.Revenue) || 0;
       const prof = Number(row.Profit) || 0;
       const qty = Number(row.Quantity) || 0;
@@ -78,7 +79,7 @@ const AdminHomeTab = ({
       const cat = row.Category || 'Unknown';
       categorySales[cat] = (categorySales[cat] || 0) + rev;
 
-      const reg = row.Location || 'Unknown';
+      const reg = row.Region || 'Unknown';
       regionSales[reg] = (regionSales[reg] || 0) + rev;
     });
 
@@ -88,7 +89,7 @@ const AdminHomeTab = ({
       totalRevenue,
       totalProfit,
       totalQuantity,
-      totalOrders: rawData.length,
+      totalOrders: data.length,
       lineData: {
         labels: sortedMonths,
         datasets: [{
@@ -118,7 +119,7 @@ const AdminHomeTab = ({
         }]
       }
     };
-  }, [rawData]);
+  }, [cleanData, rawData]);
 
   // Activity logs
   const logs = useMemo(() => {

@@ -524,11 +524,11 @@ function App() {
             <AdminHomeTab 
               revenue={revenue}
               rawData={rawData}
+              cleanData={cleanData}
               tokens={tokens}
               accountsCount={accountsCount}
               withdrawHistory={withdrawHistory}
               onFileUpload={handleFileUpload}
-              loadSampleData={loadSampleData}
               uploadError={uploadError}
               username={user.username}
               resetData={resetData}
@@ -540,9 +540,9 @@ function App() {
             <UserHomeTab 
               user={user}
               rawData={rawData}
+              cleanData={cleanData}
               tokens={tokens}
               onFileUpload={handleFileUpload}
-              loadSampleData={loadSampleData}
               uploadError={uploadError}
               resetData={resetData}
               setActiveTab={setActiveTab}
