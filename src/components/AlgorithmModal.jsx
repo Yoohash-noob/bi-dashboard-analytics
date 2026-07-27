@@ -37,9 +37,34 @@ const AlgorithmModal = ({ tab, isOpen, onClose }) => {
                   Memuat data bersih ke struktur <strong>Star Schema</strong>. Model ini membagi data menjadi:
                 </p>
                 <ul>
-                  <li><strong>1 Tabel Fakta (Fact_Sales):</strong> Menyimpan kunci asing (*foreign keys*) dan metrik kuantitatif (Quantity, Revenue, Profit).</li>
-                  <li><strong>4 Tabel Dimensi:</strong> Dim_Date (Tanggal/Waktu), Dim_Customer (Pelanggan), Dim_Location (Geografis), dan Dim_Product (Katalog).</li>
+                  <li><strong>1 Tabel Fakta (Fact_Sales):</strong> Menyimpan metrik kuantitatif (Quantity, Revenue, Profit).</li>
+                  <li><strong>4 Tabel Dimensi:</strong> Dim_Date, Dim_Customer, Dim_Location, Dim_Product.</li>
                 </ul>
+                <div style={{ margin: '1.5rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', height: '280px' }}>
+                  {/* Center Fact Table */}
+                  <div style={{ background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', padding: '1rem', borderRadius: '8px', zIndex: 2, textAlign: 'center', boxShadow: '0 4px 15px rgba(0,0,0,0.3)', width: '140px' }}>
+                    <div style={{ fontWeight: 'bold', borderBottom: '1px solid rgba(255,255,255,0.3)', paddingBottom: '0.5rem', marginBottom: '0.5rem' }}>Fact_Sales</div>
+                    <div style={{ fontSize: '0.75rem', color: '#e2e8f0', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                      <span>🔑 Date_ID</span>
+                      <span>🔑 Cust_ID</span>
+                      <span>🔑 Loc_ID</span>
+                      <span>🔑 Prod_ID</span>
+                      <span style={{ color: '#fbbf24', marginTop: '4px' }}>📊 Revenue</span>
+                      <span style={{ color: '#fbbf24' }}>📊 Profit</span>
+                    </div>
+                  </div>
+                  {/* Dim Tables */}
+                  <div style={{ position: 'absolute', top: '20px', left: '50%', transform: 'translateX(-50%)', background: '#475569', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', zIndex: 2, border: '1px solid #64748b' }}>Dim_Date</div>
+                  <div style={{ position: 'absolute', bottom: '20px', left: '50%', transform: 'translateX(-50%)', background: '#475569', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', zIndex: 2, border: '1px solid #64748b' }}>Dim_Customer</div>
+                  <div style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%)', background: '#475569', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', zIndex: 2, border: '1px solid #64748b' }}>Dim_Location</div>
+                  <div style={{ position: 'absolute', right: '20px', top: '50%', transform: 'translateY(-50%)', background: '#475569', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.8rem', zIndex: 2, border: '1px solid #64748b' }}>Dim_Product</div>
+                  
+                  {/* Lines connecting them */}
+                  <div style={{ position: 'absolute', top: '45px', left: '50%', transform: 'translateX(-50%)', width: '2px', height: '50px', background: 'rgba(255,255,255,0.2)', zIndex: 1 }}></div>
+                  <div style={{ position: 'absolute', bottom: '45px', left: '50%', transform: 'translateX(-50%)', width: '2px', height: '50px', background: 'rgba(255,255,255,0.2)', zIndex: 1 }}></div>
+                  <div style={{ position: 'absolute', left: '120px', top: '50%', transform: 'translateY(-50%)', width: '90px', height: '2px', background: 'rgba(255,255,255,0.2)', zIndex: 1 }}></div>
+                  <div style={{ position: 'absolute', right: '120px', top: '50%', transform: 'translateY(-50%)', width: '90px', height: '2px', background: 'rgba(255,255,255,0.2)', zIndex: 1 }}></div>
+                </div>
                 <p>Struktur ini mengoptimalkan performa query agregasi (OLAP) di database relasional.</p>
               </div>
             </div>

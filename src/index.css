@@ -2961,7 +2961,449 @@ option {
   position: relative;
 }
 
+/* =============================================
+   ADMIN DASHBOARD LAYOUT
+   ============================================= */
 
+.admin-dashboard-container {
+  padding: 1.5rem;
+  min-height: 100vh;
+}
 
+.admin-welcome-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
 
+.admin-welcome-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, #4ea8de, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.admin-welcome-tools {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.tool-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #f1f5f9;
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.tool-btn:hover {
+  background: rgba(78, 168, 222, 0.15);
+  border-color: rgba(78, 168, 222, 0.4);
+  transform: translateY(-1px);
+}
+
+.tool-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #f72585;
+  color: white;
+  font-size: 0.6rem;
+  font-weight: 700;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-main-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 1100px) {
+  .admin-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-col-left {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-col-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* =============================================
+   GLASS-CARD-NEON (Base premium card)
+   ============================================= */
+
+.glass-card-neon {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+  transition: border-color 0.2s ease;
+}
+
+.glass-card-neon:hover {
+  border-color: rgba(78, 168, 222, 0.2);
+}
+
+/* =============================================
+   STAT CARDS
+   ============================================= */
+
+.admin-stats-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.stat-card-neon {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.stat-card-neon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.stat-card-neon.primary {
+  border-color: rgba(78, 168, 222, 0.25);
+  background: linear-gradient(135deg, rgba(78, 168, 222, 0.08) 0%, rgba(0,0,0,0) 100%);
+}
+
+.stat-card-neon.secondary {
+  border-color: rgba(124, 58, 237, 0.25);
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08) 0%, rgba(0,0,0,0) 100%);
+}
+
+.stat-title-neon {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: rgba(241, 245, 249, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.stat-value-neon {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stat-sparkline {
+  height: 3px;
+  border-radius: 2px;
+  margin-top: 0.25rem;
+  background: rgba(255,255,255,0.1);
+}
+
+.stat-sparkline.blue {
+  background: linear-gradient(90deg, #4ea8de, rgba(78, 168, 222, 0.1));
+}
+
+.stat-sparkline.purple {
+  background: linear-gradient(90deg, #7c3aed, rgba(124, 58, 237, 0.1));
+}
+
+/* =============================================
+   UPLOAD CARD & DROPZONE
+   ============================================= */
+
+.upload-card {
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header-simple {
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.card-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(241, 245, 249, 0.6);
+}
+
+.upload-dropzone {
+  flex: 1;
+  border: 2px dashed rgba(78, 168, 222, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(78, 168, 222, 0.03);
+  margin-bottom: 1rem;
+}
+
+.upload-dropzone:hover {
+  border-color: rgba(78, 168, 222, 0.6);
+  background: rgba(78, 168, 222, 0.07);
+  transform: scale(1.01);
+}
+
+.dropzone-icon {
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 8px rgba(78, 168, 222, 0.5));
+}
+
+.dropzone-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: rgba(241, 245, 249, 0.8);
+  text-align: center;
+}
+
+.dropzone-subtext {
+  font-size: 0.75rem;
+  color: rgba(241, 245, 249, 0.4);
+  text-align: center;
+}
+
+.upload-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-secondary-neon {
+  background: rgba(124, 58, 237, 0.15);
+  border: 1px solid rgba(124, 58, 237, 0.35);
+  color: #c084fc;
+  padding: 0.6rem 1.25rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-secondary-neon:hover {
+  background: rgba(124, 58, 237, 0.3);
+  border-color: rgba(124, 58, 237, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3);
+}
+
+/* =============================================
+   LOG CARD / ACTIVITY
+   ============================================= */
+
+.log-card {
+  flex: 1;
+}
+
+.activity-logs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.log-row-neon {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s;
+}
+
+.log-row-neon:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.log-icon-pill {
+  font-size: 1rem;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.log-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.log-time {
+  font-size: 0.65rem;
+  color: rgba(241, 245, 249, 0.35);
+  font-weight: 500;
+}
+
+.log-desc {
+  font-size: 0.8rem;
+  color: rgba(241, 245, 249, 0.75);
+  line-height: 1.4;
+}
+
+.log-status-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 20px;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+
+.log-status-badge.success {
+  background: rgba(45, 212, 191, 0.15);
+  color: #2dd4bf;
+  border: 1px solid rgba(45, 212, 191, 0.3);
+}
+
+.log-status-badge.info {
+  background: rgba(78, 168, 222, 0.15);
+  color: #4ea8de;
+  border: 1px solid rgba(78, 168, 222, 0.3);
+}
+
+.log-status-badge.danger {
+  background: rgba(247, 37, 133, 0.15);
+  color: #f72585;
+  border: 1px solid rgba(247, 37, 133, 0.3);
+}
+
+/* =============================================
+   CONVERSION / KPI SMALL CARDS
+   ============================================= */
+
+.admin-conversion-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.conv-small-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.conv-small-card:hover {
+  border-color: rgba(78, 168, 222, 0.25);
+  transform: translateY(-2px);
+}
+
+.conv-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.conv-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: rgba(241, 245, 249, 0.5);
+}
+
+.conv-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+}
+
+.conv-dot.active {
+  background: #2dd4bf;
+  box-shadow: 0 0 6px rgba(45, 212, 191, 0.7);
+}
+
+.conv-value {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #f1f5f9;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.conv-pill-up {
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(45, 212, 191, 0.12);
+  color: #2dd4bf;
+  border: 1px solid rgba(45, 212, 191, 0.25);
+  padding: 0.15rem 0.45rem;
+  border-radius: 20px;
+}
+
+.conv-pill-up.gold {
+  background: rgba(251, 191, 36, 0.12);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.25);
+}
+
+/* =============================================
+   CHART CARD NEON
+   ============================================= */
+
+.chart-card-neon {
+  display: flex;
+  flex-direction: column;
+}
 

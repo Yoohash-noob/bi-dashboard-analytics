@@ -1,8 +1,10 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import Papa from 'papaparse';
+import LandingPage from './components/LandingPage';
 import LoginPage from './components/LoginPage';
 import ProfileModal from './components/ProfileModal';
 import AdModal from './components/AdModal';
+import DataManagementTab from './components/DataManagementTab';
 import RevenueTab from './components/RevenueTab';
 import AccountManagementTab from './components/AccountManagementTab';
 import AdminHomeTab from './components/AdminHomeTab';
@@ -24,6 +26,9 @@ function App() {
     const saved = localStorage.getItem('bi_current_user');
     return saved ? JSON.parse(saved) : null;
   });
+  
+  // Landing Page state
+  const [showLanding, setShowLanding] = useState(true);
 
   // Modals state
   const [showProfile, setShowProfile] = useState(false);
@@ -222,6 +227,22 @@ function App() {
     }
   };
 
+  const handleUpdateData = (index, newRow) => {
+    if (!rawData) return;
+    const newData = [...rawData];
+    newData[index] = newRow;
+    setRawData(newData);
+    processETL(newData);
+  };
+
+  const handleDeleteData = (index) => {
+    if (!rawData) return;
+    const newData = [...rawData];
+    newData.splice(index, 1);
+    setRawData(newData);
+    processETL(newData);
+  };
+
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('bi_current_user');
@@ -279,8 +300,11 @@ function App() {
     }
   };
 
-  // ── LOGIN SCREEN ──
+  // ── LOGIN SCREEN & LANDING PAGE ──
   if (!user) {
+    if (showLanding) {
+      return <LandingPage onGetStarted={() => setShowLanding(false)} />;
+    }
     return <LoginPage onLogin={handleLoginSuccess} />;
   }
 
@@ -307,7 +331,8 @@ function App() {
         { key: 'analysis', label: 'Analysis Services', icon: '📊' },
         { key: 'mining', label: 'Data Mining', icon: '⛏️' },
         { key: 'reporting', label: 'Reporting Services', icon: '📈' },
-        { key: 'clustering', label: 'Clustering Support', icon: '🎯' }
+        { key: 'clustering', label: 'Clustering Support', icon: '🎯' },
+        { key: 'datamanagement', label: 'Data Management', icon: '📝' }
       );
     } else {
       allTabs.push({ key: 'csv-guide', label: 'Panduan Format CSV', icon: '📖' });
@@ -648,6 +673,15 @@ function App() {
                 <LockedTab tabKey="clustering" tabName="Clustering Support" />
               )}
             </div>
+          )}
+
+          {/* Data Management Tab */}
+          {activeTab === 'datamanagement' && isAdmin && (
+            <DataManagementTab 
+              data={rawData} 
+              onUpdateData={handleUpdateData} 
+              onDeleteData={handleDeleteData} 
+            />
           )}
 
           {/* Admin Monetization Tab */}

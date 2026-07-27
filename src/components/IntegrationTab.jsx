@@ -59,6 +59,24 @@ const IntegrationTab = ({ rawData, cleanData, etlLogs }) => {
         </div>
       </div>
 
+      <div style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
+        <h3>Data Preview (Before vs After)</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1rem' }}>
+          <div>
+            <h4 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>❌ Before (Raw Data)</h4>
+            <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflowX: 'auto' }}>
+              <pre>{rawData && rawData.length > 0 ? JSON.stringify(rawData[0], null, 2) : 'No data'}</pre>
+            </div>
+          </div>
+          <div>
+            <h4 style={{ color: '#10b981', marginBottom: '0.5rem' }}>✅ After (Clean Data)</h4>
+            <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflowX: 'auto' }}>
+              <pre>{cleanData && cleanData.length > 0 ? JSON.stringify(cleanData[0], null, 2) : 'No data'}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="etl-log">
         <h3>ETL Logs</h3>
         <div className="log-console">

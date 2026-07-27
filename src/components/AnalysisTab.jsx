@@ -130,9 +130,15 @@ const AnalysisTab = ({ data }) => {
 
   return (
     <div className="analysis-tab">
-      <div className="controls-bar" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '12px' }}>
-        <label>Row:
-          <select value={rowDim} onChange={e => setRowDim(e.target.value)}>
+      <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
+        <h3 style={{ marginBottom: '1rem', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <span>🧊</span> Slice & Dice Simulator (OLAP Cube)
+        </h3>
+        <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Pilih dimensi baris, kolom, dan metrik yang ingin dianalisis. Gunakan filter untuk memotong (slice) data.</p>
+        <div className="controls-bar" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '15px' }}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+            Dimensi Baris (Row)
+            <select value={rowDim} onChange={e => setRowDim(e.target.value)} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
             <option value="Category">Category</option>
             <option value="Region">Region</option>
             <option value="State">State</option>
@@ -143,8 +149,9 @@ const AnalysisTab = ({ data }) => {
           </select>
         </label>
         
-        <label>Column:
-          <select value={colDim} onChange={e => setColDim(e.target.value)}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+            Dimensi Kolom (Column)
+            <select value={colDim} onChange={e => setColDim(e.target.value)} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
             <option value="Year">Year</option>
             <option value="Month">Month</option>
             <option value="Quarter">Quarter</option>
@@ -153,8 +160,9 @@ const AnalysisTab = ({ data }) => {
           </select>
         </label>
 
-        <label>Measure:
-          <select value={measure} onChange={e => setMeasure(e.target.value)}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+            Metrik (Measure)
+            <select value={measure} onChange={e => setMeasure(e.target.value)} style={{ padding: '8px 12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8', borderRadius: '6px', fontWeight: 'bold' }}>
             <option value="Revenue">Revenue</option>
             <option value="Profit">Profit</option>
             <option value="Quantity">Quantity</option>
@@ -163,42 +171,46 @@ const AnalysisTab = ({ data }) => {
           </select>
         </label>
 
-        <label>Region:
-          <select value={filters.Region} onChange={e => setFilters({...filters, Region: e.target.value})}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+            Filter Region
+            <select value={filters.Region} onChange={e => setFilters({...filters, Region: e.target.value})} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
             <option value="Semua">Semua</option>
             {uniqueValues('Region').map(r => <option key={r} value={r}>{r}</option>)}
           </select>
         </label>
         
-        <label>Category:
-          <select value={filters.Category} onChange={e => setFilters({...filters, Category: e.target.value})}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+            Filter Category
+            <select value={filters.Category} onChange={e => setFilters({...filters, Category: e.target.value})} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
             <option value="Semua">Semua</option>
             {uniqueValues('Category').map(c => <option key={c} value={c}>{c}</option>)}
           </select>
         </label>
         
-        <label>Year:
-          <select value={filters.Year} onChange={e => setFilters({...filters, Year: e.target.value})}>
+          <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
+            Filter Year
+            <select value={filters.Year} onChange={e => setFilters({...filters, Year: e.target.value})} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
             <option value="Semua">Semua</option>
             {uniqueValues('Year').map(y => <option key={y} value={y}>{y}</option>)}
           </select>
         </label>
-        <button
-          onClick={handleDownloadPivotCSV}
-          style={{
-            display: 'inline-flex', alignItems: 'center', gap: '6px',
-            padding: '6px 14px', borderRadius: '8px', fontSize: '12px',
-            fontWeight: 600, cursor: 'pointer', border: '1px solid rgba(16,185,129,0.4)',
-            background: 'rgba(16,185,129,0.15)', color: '#6ee7b7',
-            transition: 'all 0.2s'
-          }}
-          title="Download Pivot Table as CSV"
-        >
-          📥 Download CSV
-        </button>
+          <button
+            onClick={handleDownloadPivotCSV}
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: '6px',
+              padding: '8px 16px', borderRadius: '8px', fontSize: '0.85rem',
+              fontWeight: 600, cursor: 'pointer', border: 'none',
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: 'white',
+              transition: 'all 0.2s', height: 'fit-content', marginBottom: '2px'
+            }}
+            title="Download Pivot Table as CSV"
+          >
+            ⬇️ Download CSV
+          </button>
+        </div>
       </div>
 
-      <div className="pivot-table-container">
+      <div className="pivot-table-container glass-card" style={{ padding: '1rem', overflowX: 'auto' }}>
         <table className="pivot-table">
           <thead>
             <tr>

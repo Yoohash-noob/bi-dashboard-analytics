@@ -2,17 +2,22 @@
 ### Mata Kuliah: Business Intelligence — Semester 6
 > **Nama Proyek:** BI Dashboard — Analisis Data Penjualan Produk  
 > **Teknologi:** React.js · Chart.js · K-Means · Vite  
-> **Dataset:** Data penjualan produk (CSV, ~15.000 baris)
+> **Dataset:** Data penjualan produk (CSV, ~15.000 baris)  
+> **Hosting:** Netlify (Client-Side Only)  
+> **Repository:** GitHub (Yoohash-noob/bi-dashboard-analytics)
 
 ---
 
 ## 📌 APA TUJUAN PROYEK INI?
 
-Membuat sebuah **website dashboard** yang bisa:
-1. Menerima file data penjualan (CSV) dari pengguna
-2. Membersihkan dan merapikan data secara otomatis (ETL)
-3. Menampilkan analisis lengkap menggunakan **5 teknik Business Intelligence**
-4. Menyediakan fitur **download hasil** (grafik PNG & tabel CSV)
+Membuat sebuah **website dashboard Business Intelligence** yang bisa:
+1. Menampilkan **Landing Page** profesional sebelum masuk ke sistem
+2. Mendukung sistem **Login berbasis Role** (Admin & User/Eksekutif)
+3. Menerima file data penjualan (CSV) dan membersihkannya secara otomatis (ETL)
+4. Menampilkan **Executive Dashboard** dengan KPI & grafik interaktif
+5. Menyediakan **5 teknik Business Intelligence** secara interaktif
+6. Mendukung fitur **CRUD (tambah/edit/hapus)** data langsung di browser
+7. Menyediakan fitur **download hasil** (grafik PNG & tabel CSV)
 
 ---
 
@@ -22,29 +27,45 @@ Membuat sebuah **website dashboard** yang bisa:
 
 ```mermaid
 flowchart TD
-    A["📂 Pengguna Upload File CSV"] --> B["🔄 ETL: Bersihkan & Rapikan Data"]
-    B --> C["🗄️ Star Schema: Simpan ke Struktur Database"]
-    C --> D["⚙️ Proses 5 Teknik BI"]
+    A["🌐 Landing Page (Glassmorphism UI)"] --> B["🔐 Login — Role Admin / User"]
+    B --> C["🏠 Dashboard Utama (sesuai role)"]
+    C --> D["📂 Upload File CSV / Muat Sample Data"]
+    D --> E["🔄 ETL: Bersihkan & Rapikan Data"]
+    E --> F["🗄️ Star Schema: Struktur Data Warehouse"]
+    F --> G["⚙️ Proses 5 Teknik BI"]
 
-    D --> E["📊 OLAP Pivot Table\nAnalysis Services"]
-    D --> F["🔮 Forecasting & Korelasi\nData Mining"]
-    D --> G["📈 Dashboard Grafik\nReporting Services"]
-    D --> H["🎯 K-Means Clustering\nClustering Support"]
+    G --> H["📊 OLAP Pivot Table\nAnalysis Services"]
+    G --> I["🔮 Forecasting & Korelasi\nData Mining"]
+    G --> J["📈 Dashboard Grafik\nReporting Services"]
+    G --> K["🎯 K-Means Clustering\nClustering Support"]
 
-    E & F & G & H --> I["🖥️ Tampil di Dashboard Interaktif"]
-    I --> J["⬇️ Download Hasil\nPNG Grafik / CSV Data"]
+    H & I & J & K --> L["🖥️ Tampil di Dashboard Interaktif"]
+    L --> M["⬇️ Download Hasil\nPNG Grafik / CSV Data"]
 ```
 
 ### 📖 Penjelasan Alur (Mudah Dipresentasikan):
 
 | Langkah | Nama | Penjelasan Singkat |
-|---------|------|--------------------|
-| 1️⃣ | **Input** | Pengguna upload file CSV berisi data penjualan |
-| 2️⃣ | **ETL** | Sistem otomatis membersihkan data (buang duplikat, perbaiki format, isi nilai kosong) |
-| 3️⃣ | **Star Schema** | Data disimpan dalam struktur tabel yang terorganisir (1 fakta + 4 dimensi) |
-| 4️⃣ | **Proses BI** | Data diolah dengan 5 teknik BI sekaligus |
-| 5️⃣ | **Output** | Hasil muncul di dashboard sebagai grafik, tabel, dan angka statistik |
-| 6️⃣ | **Download** | Pengguna bisa download grafik (PNG) atau data (CSV) |
+|---------|------|---------------------|
+| 1️⃣ | **Landing Page** | Halaman depan dengan desain modern sebelum login |
+| 2️⃣ | **Login** | Sistem autentikasi berbasis role (Admin/User) |
+| 3️⃣ | **Input** | Pengguna upload file CSV berisi data penjualan |
+| 4️⃣ | **ETL** | Sistem otomatis membersihkan data (buang duplikat, perbaiki format) |
+| 5️⃣ | **Star Schema** | Data disimpan dalam struktur tabel yang terorganisir (1 fakta + 4 dimensi) |
+| 6️⃣ | **Proses BI** | Data diolah dengan 5 teknik BI sekaligus |
+| 7️⃣ | **Output** | Hasil muncul di dashboard sebagai grafik, tabel, dan angka statistik |
+| 8️⃣ | **Download** | Pengguna bisa download grafik (PNG) atau data (CSV) |
+
+---
+
+## 🔐 BAGIAN 1B — SISTEM AKSES & ROLE
+
+Aplikasi mendukung dua jenis pengguna dengan tampilan dashboard yang berbeda:
+
+| Role | Username | Akses |
+|------|----------|-------|
+| **Admin** | admin | Upload data, CRUD tabel, lihat semua grafik, kelola sistem |
+| **User (Eksekutif)** | user | Lihat dashboard KPI & grafik, analisis BI (read-only) |
 
 ---
 
@@ -127,7 +148,8 @@ erDiagram
 
 **Output yang bisa dilihat:**
 - ✅ Log proses ETL (berhasil/gagal per langkah)
-- ✅ Tampilan skema tabel sebelum dan sesudah ETL
+- ✅ **Preview Before/After** (tampilkan perubahan data sebelum dan sesudah ETL)
+- ✅ **Visualisasi diagram Star Schema** langsung di antarmuka
 - ✅ Statistik jumlah data: berapa yang bersih, berapa yang dibuang
 
 ---
@@ -137,7 +159,7 @@ erDiagram
 
 **Cara kerjanya:**
 - Pengguna bebas memilih: **baris** (misal: Kategori), **kolom** (misal: Tahun), dan **nilai** (misal: Revenue)
-- Bisa difilter berdasarkan Region, Kategori, atau Tahun
+- Bisa difilter berdasarkan Region, Kategori, atau Tahun (Slice & Dice)
 - Ada tombol expand untuk melihat detail sub-baris (drill-down)
 
 **Contoh penggunaan:**
@@ -145,8 +167,8 @@ erDiagram
 - "Bandingkan profit per wilayah di Q3"
 
 **Output yang bisa dilihat:**
-- ✅ Tabel pivot interaktif
-- ✅ Grand Total otomatis di bawah tabel
+- ✅ **Simulator Slice & Dice** dengan UI premium (Glassmorphism)
+- ✅ Tabel pivot interaktif dengan Grand Total
 - ✅ Download hasil pivot sebagai CSV
 
 ---
@@ -158,9 +180,9 @@ erDiagram
 
 | Sub-fitur | Penjelasan | Output |
 |-----------|------------|--------|
-| **Forecasting** | Prediksi penjualan bulan ke depan (regresi linear) | Grafik garis dengan prediksi |
+| **Forecasting** | Prediksi penjualan bulan ke depan (regresi linear OLS) | Grafik garis dengan prediksi |
 | **Korelasi** | Ukur hubungan antar variabel (Qty, Harga, Profit) | Heatmap matriks korelasi |
-| **Market Basket** | Produk yang sering dibeli bersamaan | Tabel & grafik 10 pasangan |
+| **Market Basket** | Produk yang sering dibeli bersamaan (Co-occurrence) | Tabel & grafik 10 pasangan |
 
 **Output yang bisa dilihat:**
 - ✅ Grafik Forecasting (pilih 3, 6, 9, atau 12 bulan ke depan)
@@ -172,22 +194,22 @@ erDiagram
 ### 📈 Fitur 4: Reporting Services
 > *"Dashboard laporan visual yang siap dipresentasikan"*
 
+**KPI yang ditampilkan di Executive Dashboard:**
+💰 Total Revenue · 💹 Total Profit · 📊 Profit Margin · 📦 Total Qty · 🛒 Avg Order Value · 🔢 Total Orders
+
 **Grafik yang tersedia:**
 
 | Grafik | Penjelasan |
 |--------|------------|
-| 📉 Monthly Trend | Tren pendapatan per bulan |
-| 🍩 Revenue by Category | Kontribusi tiap kategori (donat) |
+| 📉 Monthly Trend | Tren pendapatan per bulan (Area Chart) |
+| 🍩 Revenue by Category | Kontribusi tiap kategori (Bar Chart) |
 | 🏆 Top 10 Products | Produk dengan revenue tertinggi |
-| 🗺️ Revenue by Region | Perbandingan revenue per wilayah |
-
-**KPI yang ditampilkan:**
-💰 Total Revenue · 💹 Total Profit · 📊 Profit Margin · 📦 Total Qty · 🛒 Avg Order Value · 🔢 Total Orders
+| 🗺️ Revenue by Region | Proporsi per wilayah (Doughnut Chart) |
 
 **Output yang bisa dilihat:**
-- ✅ 6 kartu KPI di bagian atas
-- ✅ 4 grafik interaktif
-- ✅ Tabel Top 20 Pelanggan
+- ✅ Dashboard eksekutif berbeda untuk Admin dan User
+- ✅ KPI cards dengan data real-time dari dataset yang diupload
+- ✅ 4 grafik interaktif menggunakan Chart.js
 - ✅ Download tiap grafik (PNG) dan tiap tabel (CSV)
 
 ---
@@ -198,7 +220,9 @@ erDiagram
 **Cara kerjanya:**
 - Algoritma K-Means mengelompokkan data ke dalam K kelompok
 - Pengguna pilih: jumlah cluster (2–6), sumbu X dan Y, mode (Pelanggan atau Kota)
-- Algoritma berjalan langsung di browser, tidak perlu server
+- Normalisasi Min-Max agar skala data setara
+- Jarak Euclidean untuk menentukan keanggotaan cluster
+- Algoritma berjalan langsung di browser (client-side, tanpa server)
 
 **Contoh hasil:**
 
@@ -207,11 +231,26 @@ erDiagram
 | Cluster 1 | VIP Customer | Revenue tinggi, sering beli |
 | Cluster 2 | Bulk Buyer | Order banyak tapi nilai kecil |
 | Cluster 3 | Occasional Spender | Jarang beli tapi sekali beli mahal |
+| Cluster 4 | Casual Buyer | Revenue & kuantitas rendah |
 
 **Output yang bisa dilihat:**
 - ✅ Scatter Plot interaktif dengan warna tiap cluster
 - ✅ Profil tiap cluster (nama, jumlah anggota, rata-rata nilai)
 - ✅ Download scatter plot (PNG) dan data cluster (CSV)
+
+---
+
+## 🛠️ BAGIAN 3B — FITUR TAMBAHAN (REVISI)
+
+### 📝 CRUD Data Management (Admin Only)
+> *"Admin dapat mengelola data langsung dari browser tanpa perlu software eksternal"*
+
+- **Create:** Tambah baris data baru ke tabel
+- **Read:** Tampilkan 15.000+ baris data dengan sistem paginasi (10 baris/halaman)
+- **Update:** Edit langsung nilai pada setiap sel tabel
+- **Delete:** Hapus baris data yang tidak dibutuhkan
+- **Export:** Download data yang sudah diedit sebagai CSV baru
+- **Reactive:** Setiap perubahan data langsung diproses ulang ke semua chart & analisis
 
 ---
 
@@ -221,16 +260,20 @@ erDiagram
 📦 archive/                         ← Root folder proyek
 │
 ├── 📁 src/                         ← Kode sumber utama (React)
-│   ├── 📄 App.jsx                  ← Komponen utama aplikasi
-│   ├── 📄 index.css                ← Styling & design sistem
+│   ├── 📄 App.jsx                  ← Komponen utama + state management
+│   ├── 📄 index.css                ← Styling & design sistem (2800+ baris)
 │   │
-│   ├── 📁 components/              ← Komponen UI per tab
+│   ├── 📁 components/              ← Komponen UI per halaman/tab
+│   │   ├── LandingPage.jsx         ← Halaman depan (Glassmorphism)
+│   │   ├── AdminHomeTab.jsx        ← Dashboard Admin (upload + KPI + charts)
+│   │   ├── UserHomeTab.jsx         ← Dashboard Eksekutif (KPI + charts)
+│   │   ├── DataManagementTab.jsx   ← CRUD tabel data (Admin Only)
 │   │   ├── IntegrationTab.jsx      ← Tab ETL & Star Schema
 │   │   ├── AnalysisTab.jsx         ← Tab OLAP Pivot Table
 │   │   ├── MiningTab.jsx           ← Tab Data Mining
 │   │   ├── ReportingTab.jsx        ← Tab Dashboard Laporan
 │   │   ├── ClusteringTab.jsx       ← Tab K-Means Clustering
-│   │   ├── AlgorithmModal.jsx      ← Modal penjelasan algoritma
+│   │   ├── AlgorithmModal.jsx      ← Modal penjelasan algoritma & kode Python
 │   │   └── ErrorBanner.jsx         ← Notifikasi error upload
 │   │
 │   └── 📁 utils/                   ← Fungsi logika/kalkulasi
@@ -239,7 +282,7 @@ erDiagram
 │       ├── mining.js               ← Forecasting & korelasi
 │       └── download.js             ← Helper download PNG & CSV
 │
-├── 📁 public/                      ← File statis
+├── 📁 public/                      ← File statis (dataset sampel)
 ├── 📁 sql/                         ← Script SQL Star Schema
 ├── 📁 ssis/                        ← Desain SSIS (ETL Microsoft)
 ├── 📁 ssas/                        ← Desain SSAS (Cube)
@@ -273,9 +316,14 @@ gantt
     Forecasting dan Korelasi          :done, w3a, 2026-07-31, 3d
     K-Means Clustering                :done, w3b, after w3a, 4d
 
-    section Reporting dan Final
-    Dashboard Reporting dan Download  :done,   w4a, 2026-08-07, 4d
-    Testing dan Presentasi Akhir      :active, w4b, after w4a, 3d
+    section Revisi & Fitur Tambahan
+    Landing Page & Login System       :done, w4a, 2026-07-27, 1d
+    CRUD Data Management              :done, w4b, 2026-07-27, 1d
+    Executive Dashboard (KPI+Charts)  :done, w4c, 2026-07-27, 1d
+    Peningkatan 5 Teknik BI           :done, w4d, 2026-07-27, 1d
+
+    section Final
+    Testing dan Presentasi Akhir      :active, w5a, 2026-07-27, 1d
 ```
 
 | Minggu | Fokus | Status |
@@ -283,7 +331,8 @@ gantt
 | **Minggu 1** | Perencanaan, desain database, buat dokumen | ✅ Selesai |
 | **Minggu 2** | ETL pipeline, OLAP Pivot Table interaktif | ✅ Selesai |
 | **Minggu 3** | Forecasting, korelasi, K-Means clustering | ✅ Selesai |
-| **Minggu 4** | Dashboard reporting, fitur download, presentasi | 🔄 Berjalan |
+| **Minggu 4 (Revisi)** | Landing page, CRUD, Executive Dashboard, peningkatan BI | ✅ Selesai |
+| **Presentasi** | Demo & sidang skripsi | 🔄 Berjalan |
 
 ---
 
@@ -294,11 +343,13 @@ gantt
 | **React.js 18** | Framework UI komponen |
 | **Vite 6** | Build tool & dev server cepat |
 | **Chart.js 4** | Render grafik (Line, Bar, Scatter, Doughnut) |
+| **react-chartjs-2** | Wrapper React untuk Chart.js |
 | **PapaParse** | Parse file CSV langsung di browser |
-| **Vanilla CSS** | Styling & dark mode premium |
+| **Vanilla CSS** | Styling & dark mode premium (Glassmorphism) |
 | **JavaScript ES6+** | Logika algoritma (K-Means, regresi linear, ETL) |
+| **Netlify** | Hosting & deployment (CD otomatis dari GitHub) |
 
-> 💡 **Catatan:** Semua proses berjalan 100% di browser (client-side). Tidak membutuhkan server backend atau database eksternal.
+> 💡 **Catatan:** Semua proses berjalan 100% di browser (client-side). Tidak membutuhkan server backend atau database eksternal. Ini berarti aplikasi sangat cepat, portable, dan gratis untuk di-hosting.
 
 ---
 
@@ -306,8 +357,8 @@ gantt
 
 Jika dosen bertanya *"Jelaskan proyekmu secara singkat"*, gunakan kalimat ini:
 
-> *"Proyek ini adalah **website Business Intelligence** berbasis browser yang mengolah data penjualan CSV secara real-time. Sistemnya mencakup 5 teknik BI utama: **ETL** untuk pembersihan data, **OLAP Pivot Table** untuk analisis multidimensi, **Data Mining** untuk prediksi dan korelasi, **Reporting Dashboard** dengan grafik interaktif, dan **K-Means Clustering** untuk segmentasi pelanggan. Semua hasilnya bisa diunduh langsung sebagai file PNG atau CSV."*
+> *"Proyek ini adalah **website Business Intelligence** berbasis browser yang mengolah data penjualan CSV secara real-time. Sistemnya memiliki **Landing Page** modern, sistem **login berbasis role** (Admin & User), dan **5 teknik BI utama**: ETL untuk pembersihan data, OLAP Pivot Table untuk analisis multidimensi, Data Mining untuk prediksi dan korelasi, Reporting Dashboard dengan grafik interaktif, dan K-Means Clustering untuk segmentasi pelanggan. Admin juga dapat melakukan **CRUD** langsung terhadap data. Semua hasilnya bisa diunduh langsung sebagai file PNG atau CSV. Aplikasi di-hosting di Netlify secara gratis."*
 
 ---
 
-*Dokumen ini siap diupload ke GitHub sebagai bagian dari dokumentasi proyek.*
+*Dokumen ini di-update pada: 2026-07-27 — Versi Final (Revisi Lengkap)*
