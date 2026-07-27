@@ -161,7 +161,7 @@ function App() {
 
   const loadSampleData = () => {
     setIsLoading(true);
-    fetch('/product_sales_dataset_15k.csv')
+    fetch('product_sales_dataset_15k.csv')
       .then(res => res.text())
       .then(csvText => {
         Papa.parse(csvText, {
