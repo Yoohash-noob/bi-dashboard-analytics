@@ -332,7 +332,7 @@ gantt
 | **Minggu 2** | ETL pipeline, OLAP Pivot Table interaktif | ✅ Selesai |
 | **Minggu 3** | Forecasting, korelasi, K-Means clustering | ✅ Selesai |
 | **Minggu 4 (Revisi)** | Landing page, CRUD, Executive Dashboard, peningkatan BI | ✅ Selesai |
-| **Presentasi** | Demo & sidang skripsi | 🔄 Berjalan |
+| **Presentasi** | 🔄 Berjalan |
 
 ---
 
