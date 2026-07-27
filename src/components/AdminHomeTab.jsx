@@ -191,9 +191,6 @@ const AdminHomeTab = ({
                 <p className="dropzone-text">Click or drag file here to upload</p>
                 <p className="dropzone-subtext">Supported formats: CSV, XLSX (Data Penjualan)</p>
               </div>
-              <div className="upload-actions">
-                <button className="btn-secondary-neon" onClick={loadSampleData}>Muat Sample Data</button>
-              </div>
               {uploadError && <div style={{ marginTop: '1rem', color: '#f87171', fontSize: '0.9rem', textAlign: 'center' }}>⚠️ {uploadError}</div>}
             </div>
           ) : (
