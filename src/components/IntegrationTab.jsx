@@ -32,8 +32,18 @@ const IntegrationTab = ({ rawData, cleanData, etlLogs }) => {
 
   return (
     <div className="integration-tab">
-      <h3>ETL Pipeline & Star Schema</h3>
+      <h3>Integration Services (ETL Pipeline & Star Schema)</h3>
       
+      {/* Penjelasan Komponen Integration */}
+      <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(78, 168, 222, 0.3)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+        <h4 style={{ color: '#38bdf8', margin: '0 0 0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>
+          💡 Penjelasan Teknik: Integration Services (ETL & Star Schema)
+        </h4>
+        <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.6', margin: 0 }}>
+          Modul ini bertugas <strong>mengintegrasikan dan membersihkan data mentah (ETL)</strong> serta menyusunnya ke dalam <strong>Star Schema</strong>. ETL memastikan tidak ada data tidak valid yang masuk ke analisis BI, sedangkan Star Schema memisahkan data transaksi utama (Fact Table) dengan data referensi pembanding (Dimension Tables).
+        </p>
+      </div>
+
       <div className="etl-pipeline">
         <div className="etl-card">
           <div className="step-number">1</div>
@@ -45,10 +55,10 @@ const IntegrationTab = ({ rawData, cleanData, etlLogs }) => {
           <div className="step-number">2</div>
           <h3>Transform</h3>
           <ul>
-            <li>Trim headers</li>
-            <li>Convert data types</li>
-            <li>Standardize dates</li>
-            <li>Remove invalid rows</li>
+            <li>Trim headers (hapus spasi)</li>
+            <li>Konversi tipe data numerik</li>
+            <li>Standardisasi tanggal (YYYY-MM-DD)</li>
+            <li>Hapus baris kosong / tidak valid</li>
           </ul>
         </div>
         <div className="etl-card">
@@ -61,7 +71,10 @@ const IntegrationTab = ({ rawData, cleanData, etlLogs }) => {
 
       <div style={{ margin: '2rem 0', padding: '1.5rem', background: 'rgba(0,0,0,0.2)', borderRadius: '12px' }}>
         <h3>Data Preview (Before vs After)</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', marginTop: '1rem' }}>
+        <p style={{ color: '#94a3b8', fontSize: '0.82rem', marginBottom: '1rem' }}>
+          Perbandingan struktur data mentah sebelum pembersihan (Before) dan data bersih setelah pemangkasan spasi serta normalisasi tipe data (After).
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
           <div>
             <h4 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>❌ Before (Raw Data)</h4>
             <div style={{ background: '#1e293b', padding: '1rem', borderRadius: '8px', fontSize: '0.8rem', overflowX: 'auto' }}>
@@ -87,7 +100,17 @@ const IntegrationTab = ({ rawData, cleanData, etlLogs }) => {
       </div>
 
       <div className="schema-diagram">
-        <h3>Star Schema</h3>
+        <h3>Star Schema (Data Warehouse Architecture)</h3>
+        
+        {/* Penjelasan Star Schema */}
+        <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '8px', padding: '1rem', marginBottom: '1.5rem', textAlign: 'left' }}>
+          <h5 style={{ color: '#fbbf24', margin: '0 0 0.4rem 0', fontSize: '0.88rem' }}>📌 Cara Membaca Star Schema:</h5>
+          <ul style={{ color: '#cbd5e1', fontSize: '0.8rem', lineHeight: '1.5', margin: 0, paddingLeft: '1.2rem' }}>
+            <li><strong>Fact_Sales (Tabel Fakta pusat)</strong>: Berisi data kuantitatif utama (Order_ID, Quantity, Revenue, Profit) yang diukur dan dihitung.</li>
+            <li><strong>Dim_* (Tabel Dimensi sekeliling)</strong>: Berisi atribut konteks seperti <code>Dim_Date</code> (Waktu), <code>Dim_Customer</code> (Pelanggan), <code>Dim_Location</code> (Wilayah), dan <code>Dim_Product</code> (Kategori Produk).</li>
+          </ul>
+        </div>
+
         <div className="schema-fact">
           <h4>Fact_Sales</h4>
           <ul>

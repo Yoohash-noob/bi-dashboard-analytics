@@ -82,7 +82,7 @@ const AnalysisTab = ({ data }) => {
     const formatVal = (obj) => {
       if (!obj) return 0;
       if (measure === 'Avg_Unit_Price') return obj.sum / (obj.count || 1);
-      if (measure === 'Profit_Margin') return (obj.sum / (obj.qty || 1)) * 100; // rough approx depending on measure
+      if (measure === 'Profit_Margin') return (obj.sum / (obj.qty || 1)) * 100;
       return obj.sum;
     };
 
@@ -120,7 +120,6 @@ const AnalysisTab = ({ data }) => {
       obj['Total'] = Number(r._total || 0).toFixed(2);
       return obj;
     });
-    // Also append grand total
     const gt = { [rowDim]: 'Grand Total' };
     pivotData.cols.forEach(c => { gt[c] = Number(pivotData.grandTotals[c] || 0).toFixed(2); });
     gt['Total'] = Number(pivotData.grandTotals._total || 0).toFixed(2);
@@ -130,70 +129,88 @@ const AnalysisTab = ({ data }) => {
 
   return (
     <div className="analysis-tab">
+      {/* Explanation Box */}
+      <div style={{ background: 'rgba(15, 23, 42, 0.7)', border: '1px solid rgba(78, 168, 222, 0.3)', borderRadius: '12px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+        <h4 style={{ color: '#38bdf8', margin: '0 0 0.5rem 0', fontSize: '1rem', fontWeight: 'bold' }}>
+          💡 Penjelasan Teknik: Analysis Services (OLAP Multi-Dimensional Cube)
+        </h4>
+        <p style={{ color: '#cbd5e1', fontSize: '0.85rem', lineHeight: '1.6', margin: '0 0 0.75rem 0' }}>
+          Modul ini memfasilitasi <strong>analisis OLAP (Online Analytical Processing)</strong> dengan teknik <strong>Slice (Memotong)</strong> dan <strong>Dice (Membagi)</strong> data multidimensi secara interaktif dalam bentuk matriks Pivot Table.
+        </p>
+        <div style={{ background: 'rgba(255,255,255,0.03)', borderRadius: '8px', padding: '0.8rem', fontSize: '0.8rem', color: '#94a3b8' }}>
+          <strong style={{ color: '#fbbf24' }}>Cara Membaca Matriks OLAP:</strong>
+          <ul style={{ margin: '0.3rem 0 0 0', paddingLeft: '1.2rem', color: '#cbd5e1' }}>
+            <li><strong>Dimensi Baris (Row) & Kolom (Column)</strong>: Menentukan sudut pandang pengelompokan data (misal: Kategori produk di baris vs Tahun di kolom).</li>
+            <li><strong>Metrik (Measure)</strong>: Nilai agregasi yang dihitung di setiap titik potong sel (Revenue, Profit, Quantity, Avg Price, Profit Margin).</li>
+            <li><strong>Slice (Filter)</strong>: Memotong kubus data berdasarkan Region, Kategori, atau Tahun tertentu.</li>
+          </ul>
+        </div>
+      </div>
+
       <div className="glass-card" style={{ padding: '1.5rem', marginBottom: '2rem' }}>
         <h3 style={{ marginBottom: '1rem', color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <span>🧊</span> Slice & Dice Simulator (OLAP Cube)
+          <span>🧊</span> Slice & Dice Simulator (OLAP Cube Matrix)
         </h3>
         <p style={{ color: '#94a3b8', fontSize: '0.9rem', marginBottom: '1.5rem' }}>Pilih dimensi baris, kolom, dan metrik yang ingin dianalisis. Gunakan filter untuk memotong (slice) data.</p>
         <div className="controls-bar" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-end', gap: '15px' }}>
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
             Dimensi Baris (Row)
             <select value={rowDim} onChange={e => setRowDim(e.target.value)} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
-            <option value="Category">Category</option>
-            <option value="Region">Region</option>
-            <option value="State">State</option>
-            <option value="Year">Year</option>
-            <option value="Month">Month</option>
-            <option value="Sub_Category">Sub_Category</option>
-            <option value="Product_Name">Product_Name</option>
-          </select>
-        </label>
+              <option value="Category">Category</option>
+              <option value="Region">Region</option>
+              <option value="State">State</option>
+              <option value="Year">Year</option>
+              <option value="Month">Month</option>
+              <option value="Sub_Category">Sub_Category</option>
+              <option value="Product_Name">Product_Name</option>
+            </select>
+          </label>
         
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
             Dimensi Kolom (Column)
             <select value={colDim} onChange={e => setColDim(e.target.value)} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
-            <option value="Year">Year</option>
-            <option value="Month">Month</option>
-            <option value="Quarter">Quarter</option>
-            <option value="Region">Region</option>
-            <option value="Category">Category</option>
-          </select>
-        </label>
+              <option value="Year">Year</option>
+              <option value="Month">Month</option>
+              <option value="Quarter">Quarter</option>
+              <option value="Region">Region</option>
+              <option value="Category">Category</option>
+            </select>
+          </label>
 
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
             Metrik (Measure)
             <select value={measure} onChange={e => setMeasure(e.target.value)} style={{ padding: '8px 12px', background: 'rgba(56, 189, 248, 0.1)', border: '1px solid rgba(56, 189, 248, 0.3)', color: '#38bdf8', borderRadius: '6px', fontWeight: 'bold' }}>
-            <option value="Revenue">Revenue</option>
-            <option value="Profit">Profit</option>
-            <option value="Quantity">Quantity</option>
-            <option value="Unit_Price">Avg_Unit_Price</option>
-            <option value="Profit">Profit_Margin</option>
-          </select>
-        </label>
+              <option value="Revenue">Revenue</option>
+              <option value="Profit">Profit</option>
+              <option value="Quantity">Quantity</option>
+              <option value="Unit_Price">Avg_Unit_Price</option>
+              <option value="Profit">Profit_Margin</option>
+            </select>
+          </label>
 
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
             Filter Region
             <select value={filters.Region} onChange={e => setFilters({...filters, Region: e.target.value})} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
-            <option value="Semua">Semua</option>
-            {uniqueValues('Region').map(r => <option key={r} value={r}>{r}</option>)}
-          </select>
-        </label>
+              <option value="Semua">Semua</option>
+              {uniqueValues('Region').map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </label>
         
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
             Filter Category
             <select value={filters.Category} onChange={e => setFilters({...filters, Category: e.target.value})} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
-            <option value="Semua">Semua</option>
-            {uniqueValues('Category').map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </label>
+              <option value="Semua">Semua</option>
+              {uniqueValues('Category').map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </label>
         
           <label style={{ display: 'flex', flexDirection: 'column', gap: '5px', fontSize: '0.85rem', color: '#cbd5e1' }}>
             Filter Year
             <select value={filters.Year} onChange={e => setFilters({...filters, Year: e.target.value})} style={{ padding: '8px 12px', background: 'rgba(0,0,0,0.3)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '6px' }}>
-            <option value="Semua">Semua</option>
-            {uniqueValues('Year').map(y => <option key={y} value={y}>{y}</option>)}
-          </select>
-        </label>
+              <option value="Semua">Semua</option>
+              {uniqueValues('Year').map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </label>
           <button
             onClick={handleDownloadPivotCSV}
             style={{
@@ -232,7 +249,6 @@ const AnalysisTab = ({ data }) => {
                   {pivotData.cols.map(c => <td key={c}>{formatNumber(r[c])}</td>)}
                   <td><strong>{formatNumber(r._total)}</strong></td>
                 </tr>
-                {/* Expanded drill down logic could go here, omitting complex subrows for simplicity unless requested */}
               </React.Fragment>
             ))}
             <tr className="total-row">
