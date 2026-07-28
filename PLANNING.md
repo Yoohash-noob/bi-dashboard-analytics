@@ -242,29 +242,9 @@ archive/                                 ← Root folder repositori
 
 ---
 
-## 🛠️ BAGIAN 7 — REKOMENDASI PENINGKATAN & BEST PRACTICES UNTUK PRESENTASI DOSEN
-
-Aplikasi dan dokumentasi ini telah dirancang untuk menangkal semua celah pertanyaan dosen penguji skripsi/tugas akhir:
-
-1. **Jawab Celah Identitas Master Data:**  
-   *Dosen*: "Kenapa dinamakan Master Table padahal isinya data transaksi?"  
-   *Jawaban*: "Tabel ini dinamakan **Master Table Transaksi Penjualan** karena berfungsi sebagai *Single Source of Truth (SSOT)* — pusat penggabungan seluruh tabel transaksional yang sudah dibersihkan oleh pipeline ETL sebelum didistribusikan ke kubus OLAP dan klastering."
-
-2. **Jawab Celah Fleksibilitas Skema:**  
-   *Dosen*: "Bagaimana kalau struktur kolom dari file CSV beda penamaannya?"  
-   *Jawaban*: "Sistem kami dilengkapi dengan fitur **Dynamic Schema Alteration (`ALTER TABLE RENAME COLUMN`)**. Nama header kolom dapat diubah secara *real-time* lewat tombol pensil (Edit Header), dan seluruh dataset 15.000 baris akan otomatis menyesuaikan diri tanpa merusak alur analitis."
-
-3. **Jawab Celah Algoritma Data Mining:**  
-   *Dosen*: "Bagaimana cara kerja K-Means dan Regresi di browser tanpa server?"  
-   *Jawaban*: "Algoritma dieksekusi 100% *client-side* menggunakan JavaScript ES6+ dengan metode *Min-Max Normalization* dan *Euclidean Distance* untuk K-Means, serta *Ordinary Least Squares (OLS)* untuk regresi linear. Pengguna juga dapat menekan tombol **Modal Algoritma** untuk melihat kode versi Python scikit-learn nya."
-
-4. **Jawab Celah Keamanan & Akses:**  
-   *Dosen*: "Siapa saja yang boleh mengubah data?"  
-   *Jawaban*: "Sistem memiliki **Role-Based Access Control (RBAC)**. Mode Admin memiliki izin full CRUD & Schema Alteration, sedangkan mode User/Eksekutif hanya memiliki akses *read-only* untuk melihat KPI dan laporan grafik."
-
 ---
 
-## ⚙️ BAGIAN 8 — TEKNOLOGI & LIVE DEPLOYMENT
+## ⚙️ BAGIAN 7 — TEKNOLOGI & LIVE DEPLOYMENT
 
 | Komponen | Teknologi | Keterangan |
 |----------|-----------|------------|
