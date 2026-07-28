@@ -469,18 +469,23 @@
 
 /* Rename Column Button ✏️ */
 .mt-btn-rename-col {
-  background: none;
-  border: none;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  border-radius: 4px;
+  color: #38bdf8;
   cursor: pointer;
-  font-size: 0.75rem;
-  opacity: 0.4;
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: all 0.2s;
-  padding: 0.15rem;
+  flex-shrink: 0;
 }
 
 .mt-btn-rename-col:hover {
-  opacity: 1;
-  transform: scale(1.25);
+  background: #38bdf8;
+  color: #0f172a;
+  transform: scale(1.1);
 }
 
 .mt-col-filter-input {
