@@ -1,364 +1,280 @@
-# 📊 PERENCANAAN PROYEK BUSINESS INTELLIGENCE
+# 📊 PERENCANAAN PROYEK BUSINESS INTELLIGENCE & DATA WAREHOUSE
 ### Mata Kuliah: Business Intelligence — Semester 6
-> **Nama Proyek:** BI Dashboard — Analisis Data Penjualan Produk  
-> **Teknologi:** React.js · Chart.js · K-Means · Vite  
-> **Dataset:** Data penjualan produk (CSV, ~15.000 baris)  
-> **Hosting:** Netlify (Client-Side Only)  
-> **Repository:** GitHub (Yoohash-noob/bi-dashboard-analytics)
+> **Nama Proyek:** BI Dashboard Analytics — Single Source of Truth & Business Decision Support System  
+> **Teknologi:** React.js 18 · Chart.js 4 · K-Means Clustering · Vite 6 · SQL Star Schema  
+> **Dataset Utama:** Dataset Penjualan Produk E-Commerce (~15.000 Transaksi / 15K Rows)  
+> **Hosting & Live Demo:** GitHub Pages — [https://Yoohash-noob.github.io/bi-dashboard-analytics/](https://Yoohash-noob.github.io/bi-dashboard-analytics/)  
+> **Repository GitHub:** [Yoohash-noob/bi-dashboard-analytics](https://github.com/Yoohash-noob/bi-dashboard-analytics)
 
 ---
 
 ## 📌 APA TUJUAN PROYEK INI?
 
-Membuat sebuah **website dashboard Business Intelligence** yang bisa:
-1. Menampilkan **Landing Page** profesional sebelum masuk ke sistem
-2. Mendukung sistem **Login berbasis Role** (Admin & User/Eksekutif)
-3. Menerima file data penjualan (CSV) dan membersihkannya secara otomatis (ETL)
-4. Menampilkan **Executive Dashboard** dengan KPI & grafik interaktif
-5. Menyediakan **5 teknik Business Intelligence** secara interaktif
-6. Mendukung fitur **CRUD (tambah/edit/hapus)** data langsung di browser
-7. Menyediakan fitur **download hasil** (grafik PNG & tabel CSV)
+Membuat sistem **Business Intelligence (BI) & Executive Dashboard** berbasis browser yang mampu:
+1. Menampilkan **Landing Page** modern (Glassmorphism UI) sebelum masuk sistem
+2. Sistem **Akses Berbasis Role** (Admin dengan full CRUD & Schema Editing; User/Eksekutif read-only)
+3. Mengolah **Dataset 15.000 Transaksi Penjualan** secara *real-time* tanpa backend/server
+4. Memasukkan data ke dalam **Master Table (Pusat Data Penjualan Utama)** dengan kemampuan **Dynamic Schema Alteration (`ALTER TABLE RENAME COLUMN`)**, Batch Selection, Date Slicing, & Health Bar Status
+5. Menjalankan alur **ETL (Extract, Transform, Load)** dan transformasi data ke **Star Schema (1 Tabel Fakta & 4 Tabel Dimensi)**
+6. Menyajikan **5 Teknik BI Utama** (Integration Services, Analysis Services OLAP, Data Mining OLS & Correlation, Reporting Services KPI, K-Means Clustering)
+7. Memberikan **Penjelasan Akademik & Non-IT Callouts** di setiap visualisasi chart & modul agar dosen penguji memahami arti bisnis setiap variabel, cluster, dan grafik
+8. Mendukung fitur **Download Multi-Format** (Grafik PNG & Dataset CSV)
 
 ---
 
-## 🗺️ BAGIAN 1 — ALUR KERJA SISTEM
-
-> Bagaimana data bergerak dari file CSV sampai menjadi hasil analisis di layar?
+## 🗺️ BAGIAN 1 — ALUR KERJA SISTEM (DATA FLOW ARCHITECTURE)
 
 ```mermaid
 flowchart TD
-    A["🌐 Landing Page (Glassmorphism UI)"] --> B["🔐 Login — Role Admin / User"]
-    B --> C["🏠 Dashboard Utama (sesuai role)"]
-    C --> D["📂 Upload File CSV / Muat Sample Data"]
-    D --> E["🔄 ETL: Bersihkan & Rapikan Data"]
-    E --> F["🗄️ Star Schema: Struktur Data Warehouse"]
-    F --> G["⚙️ Proses 5 Teknik BI"]
+    A["🌐 Landing Page (Glassmorphism UI)"] --> B["🔐 Login Sistem — Role Admin / User"]
+    B --> C["📋 Master Table (Single Source of Truth 15K Rows)"]
+    
+    subgraph MasterTable ["⚙️ Fitur Master Table & Data Management"]
+        C1["✏️ Alter Column (Rename Header SQL)"]
+        C2["➕ Modal Insert Transaksi Baru"]
+        C3["Double-Click Inline Cell Edit"]
+        C4["🗑️ Single & Batch Delete Rows"]
+        C5["📅 Date Range Slicing & Filter Per Kolom"]
+        C1 & C2 & C3 & C4 & C5 --> C
+    end
 
-    G --> H["📊 OLAP Pivot Table\nAnalysis Services"]
-    G --> I["🔮 Forecasting & Korelasi\nData Mining"]
-    G --> J["📈 Dashboard Grafik\nReporting Services"]
-    G --> K["🎯 K-Means Clustering\nClustering Support"]
+    C --> D["🔄 ETL Pipeline: Cleansing & Deduplication"]
+    D --> E["🗄️ Star Schema Data Warehouse (FactSales + 4 Dim)"]
+    E --> F["⚙️ Engine 5 Teknik Business Intelligence"]
 
-    H & I & J & K --> L["🖥️ Tampil di Dashboard Interaktif"]
-    L --> M["⬇️ Download Hasil\nPNG Grafik / CSV Data"]
+    F --> G["📊 Analysis Services (OLAP Pivot Cube)"]
+    F --> H["🔮 Data Mining (OLS Forecast & Heatmap Pearson)"]
+    F --> I["📈 Reporting Services (KPI Executive Dashboard)"]
+    F --> J["🎯 Clustering Support (K-Means Centroid Customer)"]
+    F --> K["🔄 Integration Services (ETL Before/After & Schema)"]
+
+    G & H & I & J & K --> L["🖥️ Executive Dashboard Interaktif + Callout Akademik"]
+    L --> M["📥 Export Result (PNG Chart / CSV Table)"]
 ```
 
-### 📖 Penjelasan Alur (Mudah Dipresentasikan):
+---
 
-| Langkah | Nama | Penjelasan Singkat |
-|---------|------|---------------------|
-| 1️⃣ | **Landing Page** | Halaman depan dengan desain modern sebelum login |
-| 2️⃣ | **Login** | Sistem autentikasi berbasis role (Admin/User) |
-| 3️⃣ | **Input** | Pengguna upload file CSV berisi data penjualan |
-| 4️⃣ | **ETL** | Sistem otomatis membersihkan data (buang duplikat, perbaiki format) |
-| 5️⃣ | **Star Schema** | Data disimpan dalam struktur tabel yang terorganisir (1 fakta + 4 dimensi) |
-| 6️⃣ | **Proses BI** | Data diolah dengan 5 teknik BI sekaligus |
-| 7️⃣ | **Output** | Hasil muncul di dashboard sebagai grafik, tabel, dan angka statistik |
-| 8️⃣ | **Download** | Pengguna bisa download grafik (PNG) atau data (CSV) |
+## 📊 BAGIAN 2 — STRUKTUR TABEL DATASET RAW (15.000 BARIS / 15K ROWS EXCEL & CSV)
+
+Dataset utama yang diolah oleh sistem terdiri dari **15.000 baris data transaksi penjualan e-commerce** dengan 14 atribut/kolom utama. Berikut adalah **Kamus Data (Data Dictionary)** resmi dari dataset ini:
+
+### 📋 Kamus Data Dataset Penjualan (15K Rows)
+
+| No | Nama Kolom (Field Name) | Tipe Data SQL | Kategori Variabel | Deskripsi & Fungsi Bisnis | Contoh Nilai | Aturan Validasi ETL |
+|:--:|-------------------------|---------------|-------------------|---------------------------|--------------|---------------------|
+| 1 | `Order_ID` | `INT (PRIMARY KEY)` | Identifikasi (PK) | Nomor unik ID untuk setiap transaksi harian | `1`, `26`, `15000` | Harus unik, tidak boleh NULL, auto-increment pada insert baru |
+| 2 | `Order_Date` | `DATE` | Dimensi Waktu | Tanggal transaksi dilakukan | `2023-08-23`, `2024-12-20` | Format standar ISO YYYY-MM-DD / MM-DD-YY, tidak boleh kosong |
+| 3 | `Customer_Name` | `VARCHAR(100)` | Dimensi Pelanggan | Nama lengkap pelanggan pembeli | `Bianca Brown`, `Jared Edwards` | String dipangkas spasi (Trim), default 'Pelanggan Baru' jika kosong |
+| 4 | `City` | `VARCHAR(50)` | Dimensi Geografi | Kota tujuan pengiriman barang | `Jackson`, `Boston`, `Seattle` | Nilai string nama kota valid |
+| 5 | `State` | `VARCHAR(50)` | Dimensi Geografi | Provinsi / Negara Bagian pengiriman | `Mississippi`, `Washington` | Nama bagian/provinsi valid |
+| 6 | `Region` | `VARCHAR(20)` | Dimensi Geografi | Wilayah pemasar (East, West, South, Centre) | `South`, `West`, `East` | Enumerasi 4 wilayah utama |
+| 7 | `Country` | `VARCHAR(50)` | Dimensi Geografi | Negara tujuan pengiriman | `United States` | Default 'United States' |
+| 8 | `Category` | `VARCHAR(50)` | Dimensi Produk | Kategori utama produk | `Accessories`, `Electronics`, `Clothing` | Pengelompokan tingkat 1 |
+| 9 | `Sub_Category` | `VARCHAR(50)` | Dimensi Produk | Sub-kategori turunan produk | `Small Electronics`, `Smartphones` | Pengelompokan tingkat 2 |
+| 10 | `Product_Name` | `VARCHAR(100)` | Dimensi Produk | Nama rinci produk yang dibeli | `Phone Case`, `MacBook Air` | Spesifikasi nama item produk |
+| 11 | `Quantity` | `INT` | Ukuran (Measure) | Jumlah unit barang yang dibeli | `1`, `2`, `3`, `5` | Angka bulat positif (>= 1) |
+| 12 | `Unit_Price` | `DECIMAL(10,2)` | Ukuran (Measure) | Harga jual per unit produk | `201.01`, `875.34` | Float/Decimal positif |
+| 13 | `Revenue` | `DECIMAL(12,2)` | Ukuran (Measure) | Total omset (`Quantity * Unit_Price`) | `603.03`, `1750.68` | Rekalkulasi otomatis di ETL: `Qty * Price` |
+| 14 | `Profit` | `DECIMAL(10,2)` | Ukuran (Measure) | Keuntungan bersih dari transaksi | `221.49`, `320.37` | Keuntungan bersih sesudah HPP |
 
 ---
 
-## 🔐 BAGIAN 1B — SISTEM AKSES & ROLE
+## 🗄️ BAGIAN 3 — RANCANGAN DATA WAREHOUSE (STAR SCHEMA)
 
-Aplikasi mendukung dua jenis pengguna dengan tampilan dashboard yang berbeda:
-
-| Role | Username | Akses |
-|------|----------|-------|
-| **Admin** | admin | Upload data, CRUD tabel, lihat semua grafik, kelola sistem |
-| **User (Eksekutif)** | user | Lihat dashboard KPI & grafik, analisis BI (read-only) |
-
----
-
-## 🗄️ BAGIAN 2 — RANCANGAN DATABASE (Star Schema)
-
-> **Star Schema** adalah cara menyimpan data warehouse. Ada 1 tabel utama (Fakta) yang dikelilingi oleh tabel pendukung (Dimensi), seperti bentuk bintang.
+Sistem mengubah data mentah 15.000 baris menjadi **Star Schema Data Warehouse** yang terdiri dari **1 Tabel Fakta (FactSales)** dan **4 Tabel Dimensi (DimDate, DimCustomer, DimLocation, DimProduct)** untuk optimasi kueri analitis OLAP.
 
 ```mermaid
 erDiagram
     FACT_SALES {
-        int     Order_ID      PK  "ID unik tiap transaksi"
-        int     Date_Key      FK  "Hubung ke tabel tanggal"
-        int     Customer_Key  FK  "Hubung ke tabel pelanggan"
-        int     Location_Key  FK  "Hubung ke tabel lokasi"
-        int     Product_Key   FK  "Hubung ke tabel produk"
-        int     Quantity          "Jumlah barang terjual"
-        float   Unit_Price        "Harga per barang"
-        float   Revenue           "Total pendapatan"
-        float   Profit            "Keuntungan bersih"
+        int     Order_ID      PK  "Primary Key Transaksi"
+        int     Date_Key      FK  "Relasi ke DimDate"
+        int     Customer_Key  FK  "Relasi ke DimCustomer"
+        int     Location_Key  FK  "Relasi ke DimLocation"
+        int     Product_Key   FK  "Relasi ke DimProduct"
+        int     Quantity          "Jumlah Unit Terjual"
+        float   Unit_Price        "Harga per Unit"
+        float   Revenue           "Total Pendapatan (Omset)"
+        float   Profit            "Keuntungan Bersih (Laba)"
     }
 
     DIM_DATE {
-        int     Date_Key  PK  "Kunci tanggal"
-        date    Order_Date    "Tanggal transaksi"
-        int     Day           "Hari ke-berapa"
-        int     Month         "Bulan"
-        int     Quarter       "Kuartal Q1-Q4"
-        int     Year          "Tahun"
-        string  Day_of_Week   "Senin / Selasa / dst"
+        int     Date_Key  PK  "Key Tanggal YYYYMMDD"
+        date    Order_Date    "Tanggal Asli Transaksi"
+        int     Day           "Hari (1-31)"
+        int     Month         "Bulan (1-12)"
+        int     Quarter       "Kuartal Bisnis (Q1-Q4)"
+        int     Year          "Tahun Transaksi"
+        string  Day_of_Week   "Nama Hari"
     }
 
     DIM_CUSTOMER {
-        int     Customer_Key  PK  "Kunci pelanggan"
-        string  Customer_Name     "Nama pelanggan"
+        int     Customer_Key  PK  "Key Unik Pelanggan"
+        string  Customer_Name     "Nama Pelanggan"
     }
 
     DIM_LOCATION {
-        int     Location_Key  PK  "Kunci lokasi"
-        string  City              "Kota"
-        string  State             "Provinsi / Negara Bagian"
-        string  Region            "Wilayah Timur/Barat/dll"
+        int     Location_Key  PK  "Key Unik Lokasi"
+        string  City              "Nama Kota"
+        string  State             "Provinsi / State"
+        string  Region            "Wilayah Pemasaran"
         string  Country           "Negara"
     }
 
     DIM_PRODUCT {
-        int     Product_Key   PK  "Kunci produk"
-        string  Product_Name      "Nama produk"
-        string  Sub_Category      "Sub-kategori produk"
-        string  Category          "Kategori utama"
+        int     Product_Key   PK  "Key Unik Produk"
+        string  Product_Name      "Nama Spesifik Produk"
+        string  Sub_Category      "Sub Kategori Produk"
+        string  Category          "Kategori Utama Produk"
     }
 
-    FACT_SALES }|--|| DIM_DATE     : "terjadi pada tanggal"
-    FACT_SALES }|--|| DIM_CUSTOMER : "dibeli oleh"
-    FACT_SALES }|--|| DIM_LOCATION : "dikirim ke"
-    FACT_SALES }|--|| DIM_PRODUCT  : "berisi produk"
+    FACT_SALES }|--|| DIM_DATE     : "Terjadi pada Tanggal"
+    FACT_SALES }|--|| DIM_CUSTOMER : "Melayani Pelanggan"
+    FACT_SALES }|--|| DIM_LOCATION : "Dikirim ke Lokasi"
+    FACT_SALES }|--|| DIM_PRODUCT  : "Memuat Produk"
 ```
 
-### 📖 Penjelasan Tabel (Untuk Presentasi):
+---
 
-| Tabel | Jenis | Isi | Fungsi |
-|-------|-------|-----|--------|
-| `FACT_SALES` | **Fakta** | Angka transaksi (Revenue, Profit, Qty) | Tabel utama tempat data bisnis |
-| `DIM_DATE` | Dimensi | Info tanggal, bulan, kuartal, tahun | Filter data berdasarkan waktu |
-| `DIM_CUSTOMER` | Dimensi | Nama pelanggan | Analisis per pelanggan |
-| `DIM_LOCATION` | Dimensi | Kota, wilayah, negara | Analisis per lokasi/region |
-| `DIM_PRODUCT` | Dimensi | Nama & kategori produk | Analisis per produk |
+## 🛠️ BAGIAN 4 — FITUR MASTER TABLE & DYNAMIC SCHEMA MANAGEMENT
+
+Master Table bertindak sebagai **Single Source of Truth (SSOT)** aplikasi dengan fitur pengelolaan data kelas *enterprise*:
+
+1. **✏️ Dynamic Schema Alteration (`ALTER TABLE RENAME COLUMN`)**:
+   - Pengguna/Admin dapat mengubah nama header kolom secara langsung di tabel (misal: mengganti `Order_Date` menjadi `Tanggal_Order`, atau `Revenue` menjadi `Omset`).
+   - Perubahan nama header kolom langsung meretrukturasi seluruh 15.000 objek data secara *real-time* dan tersimpan otomatis ke `localStorage`.
+2. **➕ Popup Modal Form Insert Transaksi Baru**:
+   - Form input dengan validasi tipe data otomatis yang memperhitungkan `Revenue = Quantity * Unit_Price` dan memasukkan transaksi baru ke baris teratas.
+3. **Double-Click Inline Cell Editing**:
+   - Mengubah nilai sel mana pun secara cepat hanya dengan melakukan *double-click* pada sel tabel.
+4. **🗑️ Selection Checkbox & Batch Delete**:
+   - Memilih beberapa atau seluruh baris sekaligus untuk dihapus massal (*Bulk Delete*).
+5. **📅 Multi-Column Filter & Date Range Slicing**:
+   - Menyaring data berdasarkan rentang tanggal (*Start Date* s/d *End Date*) dan filter spesifik per kolom.
+6. **🚦 System Health Bar & Indicator**:
+   - Menampilkan status realtime integritas database, status *localStorage*, dan rasio kolom terlihat.
 
 ---
 
-## 💡 BAGIAN 3 — PENJELASAN 5 FITUR BI
+## 💡 BAGIAN 5 — PENJELASAN 5 TEKNIK BUSINESS INTELLIGENCE & CALLOUT AKADEMIK
 
-### 🔄 Fitur 1: Integration Services (ETL)
-> *"Proses membersihkan data kotor agar siap dianalisis"*
+### 🔄 1. Integration Services (ETL Pipeline)
+* **Deskripsi:** Proses ekstraksi data CSV, pembersihan (*cleansing*) duplikat & nilai NULL, serta pembentukan skema bintang (*Star Schema*).
+* **Penjelasan Akademik di Dashboard:** Menyediakan perbandingan sebelum/sesudah ETL (*Before/After Cleansing*) dan log integritas data secara visual.
 
-**Cara kerjanya:**
-- Sistem membaca file CSV yang di-upload pengguna
-- Otomatis menghapus data duplikat dan baris kosong
-- Memperbaiki format tanggal yang tidak konsisten
-- Memisahkan data ke dalam tabel Star Schema
+### 📊 2. Analysis Services (OLAP Pivot Table & Slice & Dice)
+* **Deskripsi:** Simulator multidimensi yang memungkinkan analisis agregasi variabel dari berbagai sudut (Baris: Category/Region; Kolom: Year/Quarter; Ukuran: Revenue/Profit).
+* **Penjelasan Akademik di Dashboard:** Menjelaskan konsep *Slicing* (memotong data pada dimensi tertentu) dan *Dicing* (melihat kubus data dari 2 atau lebih dimensi sekaligus).
 
-**Output yang bisa dilihat:**
-- ✅ Log proses ETL (berhasil/gagal per langkah)
-- ✅ **Preview Before/After** (tampilkan perubahan data sebelum dan sesudah ETL)
-- ✅ **Visualisasi diagram Star Schema** langsung di antarmuka
-- ✅ Statistik jumlah data: berapa yang bersih, berapa yang dibuang
+### 🔮 3. Data Mining (Forecasting OLS, Korelasi Pearson, & Market Basket)
+* **Sub-modul Mining:**
+  - **Forecasting Penjualan:** Menggunakan *Ordinary Least Squares (OLS) Linear Regression* untuk memprediksi pendapatan tren bulan mendatang beserta nilai $R^2$ dan kemiringan (*slope*).
+  - **Heatmap Korelasi Pearson:** Menghitung koefisien korelasi $r$ antara Quantity, Unit Price, Revenue, dan Profit.
+  - **Market Basket Analysis:** Menemukan pasangan produk yang paling sering dibeli bersamaan (*Co-occurrence rule*).
+* **Penjelasan Akademik di Dashboard:** Panduan membaca nilai korelasi ($+1.0$ positif sempurna, $-1.0$ negatif) dan interpretasi variabel regresi.
 
----
+### 📈 4. Reporting Services (Executive Dashboard & Chart Analysis)
+* **KPI Cards:** Total Revenue, Total Profit, Profit Margin %, Total Quantity Terjual, Average Order Value, Total Transaksi.
+* **4 Grafik Utama:**
+  1. *Monthly Revenue Trend* (Line/Area Chart)
+  2. *Revenue by Category* (Doughnut Chart)
+  3. *Top 10 Products by Revenue* (Horizontal Bar Chart)
+  4. *Revenue Distribution by Region* (Vertical Bar Chart)
+* **Penjelasan Akademik di Dashboard:** Setiap grafik dilengkapi dengan kotak callout edukatif yang menjelaskan arti fungsional visualisasi bagi pembuat keputusan bisnis.
 
-### 📊 Fitur 2: Analysis Services (OLAP Pivot Table)
-> *"Tabel interaktif untuk melihat data dari berbagai sudut pandang"*
-
-**Cara kerjanya:**
-- Pengguna bebas memilih: **baris** (misal: Kategori), **kolom** (misal: Tahun), dan **nilai** (misal: Revenue)
-- Bisa difilter berdasarkan Region, Kategori, atau Tahun (Slice & Dice)
-- Ada tombol expand untuk melihat detail sub-baris (drill-down)
-
-**Contoh penggunaan:**
-- "Berapa revenue Kategori Elektronik di setiap tahun?"
-- "Bandingkan profit per wilayah di Q3"
-
-**Output yang bisa dilihat:**
-- ✅ **Simulator Slice & Dice** dengan UI premium (Glassmorphism)
-- ✅ Tabel pivot interaktif dengan Grand Total
-- ✅ Download hasil pivot sebagai CSV
-
----
-
-### 🔮 Fitur 3: Data Mining
-> *"Menemukan pola tersembunyi dan memprediksi masa depan"*
-
-**3 sub-fitur:**
-
-| Sub-fitur | Penjelasan | Output |
-|-----------|------------|--------|
-| **Forecasting** | Prediksi penjualan bulan ke depan (regresi linear OLS) | Grafik garis dengan prediksi |
-| **Korelasi** | Ukur hubungan antar variabel (Qty, Harga, Profit) | Heatmap matriks korelasi |
-| **Market Basket** | Produk yang sering dibeli bersamaan (Co-occurrence) | Tabel & grafik 10 pasangan |
-
-**Output yang bisa dilihat:**
-- ✅ Grafik Forecasting (pilih 3, 6, 9, atau 12 bulan ke depan)
-- ✅ Koefisien R² dan Slope tren penjualan
-- ✅ Download grafik PNG & data CSV
+### 🎯 5. Clustering Support (K-Means Clustering)
+* **Deskripsi:** Mengelompokkan pelanggan atau kota ke dalam $K$ klaster berdasarkan algoritma *K-Means* (jarak Euclidean dan normalisasi Min-Max).
+* **4 Profil Segmen Pelanggan Utama:**
+  - **Pembeli VIP:** Revenue Sangat Tinggi & Profit Tinggi.
+  - **Pelanggan Premium:** Revenue Tinggi & Profit Stabil.
+  - **Pembeli Grosir/Potensial:** Kuantitas Terjual Tinggi dengan Marjin Khusus.
+  - **Pelanggan Kasual:** Frekuensi dan nilai transaksi rendah.
+* **Penjelasan Akademik di Dashboard:** Scatter plot interaktif dengan penanda segitiga putih sebagai *Centroid* (titik pusat gravitasi klaster).
 
 ---
 
-### 📈 Fitur 4: Reporting Services
-> *"Dashboard laporan visual yang siap dipresentasikan"*
+## 📁 BAGIAN 6 — STRUKTUR FOLDER REPOSITORI GITHUB
 
-**KPI yang ditampilkan di Executive Dashboard:**
-💰 Total Revenue · 💹 Total Profit · 📊 Profit Margin · 📦 Total Qty · 🛒 Avg Order Value · 🔢 Total Orders
-
-**Grafik yang tersedia:**
-
-| Grafik | Penjelasan |
-|--------|------------|
-| 📉 Monthly Trend | Tren pendapatan per bulan (Area Chart) |
-| 🍩 Revenue by Category | Kontribusi tiap kategori (Bar Chart) |
-| 🏆 Top 10 Products | Produk dengan revenue tertinggi |
-| 🗺️ Revenue by Region | Proporsi per wilayah (Doughnut Chart) |
-
-**Output yang bisa dilihat:**
-- ✅ Dashboard eksekutif berbeda untuk Admin dan User
-- ✅ KPI cards dengan data real-time dari dataset yang diupload
-- ✅ 4 grafik interaktif menggunakan Chart.js
-- ✅ Download tiap grafik (PNG) dan tiap tabel (CSV)
-
----
-
-### 🎯 Fitur 5: Clustering Support (K-Means)
-> *"Mengelompokkan pelanggan berdasarkan kemiripan perilaku belanja"*
-
-**Cara kerjanya:**
-- Algoritma K-Means mengelompokkan data ke dalam K kelompok
-- Pengguna pilih: jumlah cluster (2–6), sumbu X dan Y, mode (Pelanggan atau Kota)
-- Normalisasi Min-Max agar skala data setara
-- Jarak Euclidean untuk menentukan keanggotaan cluster
-- Algoritma berjalan langsung di browser (client-side, tanpa server)
-
-**Contoh hasil:**
-
-| Cluster | Profil | Ciri-ciri |
-|---------|--------|-----------|
-| Cluster 1 | VIP Customer | Revenue tinggi, sering beli |
-| Cluster 2 | Bulk Buyer | Order banyak tapi nilai kecil |
-| Cluster 3 | Occasional Spender | Jarang beli tapi sekali beli mahal |
-| Cluster 4 | Casual Buyer | Revenue & kuantitas rendah |
-
-**Output yang bisa dilihat:**
-- ✅ Scatter Plot interaktif dengan warna tiap cluster
-- ✅ Profil tiap cluster (nama, jumlah anggota, rata-rata nilai)
-- ✅ Download scatter plot (PNG) dan data cluster (CSV)
-
----
-
-## 🛠️ BAGIAN 3B — FITUR TAMBAHAN (REVISI)
-
-### 📝 CRUD Data Management (Admin Only)
-> *"Admin dapat mengelola data langsung dari browser tanpa perlu software eksternal"*
-
-- **Create:** Tambah baris data baru ke tabel
-- **Read:** Tampilkan 15.000+ baris data dengan sistem paginasi (10 baris/halaman)
-- **Update:** Edit langsung nilai pada setiap sel tabel
-- **Delete:** Hapus baris data yang tidak dibutuhkan
-- **Export:** Download data yang sudah diedit sebagai CSV baru
-- **Reactive:** Setiap perubahan data langsung diproses ulang ke semua chart & analisis
-
----
-
-## 📁 BAGIAN 4 — STRUKTUR FOLDER PROYEK
-
-```
-📦 archive/                         ← Root folder proyek
+```text
+archive/                                 ← Root folder repositori
+├── README.md                            # Dokumentasi resmi GitHub
+├── PLANNING.md                          # Dokumen Perencanaan & Kamus Data (File ini)
+├── product_sales_dataset_15k.csv       # Dataset sampel 15.000 baris transaksi
+├── product_sales_dataset_final.csv     # Dataset lengkap
+├── customer_segments.csv               # Result klasterisasi pelanggan
+├── etl_kmeans.py                       # Skrip Python data mining K-Means
+├── generate_star_schema.py             # Skrip Python pembuatan Star Schema SQLite
 │
-├── 📁 src/                         ← Kode sumber utama (React)
-│   ├── 📄 App.jsx                  ← Komponen utama + state management
-│   ├── 📄 index.css                ← Styling & design sistem (2800+ baris)
+├── sql/
+│   ├── oltp_create.sql                 # Skrip SQL OLTP (3NF)
+│   └── dw_create.sql                   # Skrip SQL Data Warehouse (Star Schema)
+│
+├── ssis/
+│   └── ETL_DW_Workflow.md              # Dokumentasi SSIS Integration Workflow
+├── ssas/
+│   └── CubeDefinition.xmla             # Definisi XMLA OLAP Cube SSAS
+├── ssrs/
+│   └── SalesReport.rdl                 # Layout laporan SSRS
+│
+├── src/                                 # Source Code Frontend React (Vite)
+│   ├── App.jsx                         # Shell aplikasi utama & navigasi tab
+│   ├── index.css                       # Design System CSS (Glassmorphism Dark Theme)
 │   │
-│   ├── 📁 components/              ← Komponen UI per halaman/tab
-│   │   ├── LandingPage.jsx         ← Halaman depan (Glassmorphism)
-│   │   ├── AdminHomeTab.jsx        ← Dashboard Admin (upload + KPI + charts)
-│   │   ├── UserHomeTab.jsx         ← Dashboard Eksekutif (KPI + charts)
-│   │   ├── DataManagementTab.jsx   ← CRUD tabel data (Admin Only)
-│   │   ├── IntegrationTab.jsx      ← Tab ETL & Star Schema
-│   │   ├── AnalysisTab.jsx         ← Tab OLAP Pivot Table
-│   │   ├── MiningTab.jsx           ← Tab Data Mining
-│   │   ├── ReportingTab.jsx        ← Tab Dashboard Laporan
-│   │   ├── ClusteringTab.jsx       ← Tab K-Means Clustering
-│   │   ├── AlgorithmModal.jsx      ← Modal penjelasan algoritma & kode Python
-│   │   └── ErrorBanner.jsx         ← Notifikasi error upload
+│   ├── components/                     # Modul UI & Visualisasi BI
+│   │   ├── LandingPage.jsx             # Halaman depan (Landing page)
+│   │   ├── MasterTableTab.jsx          # Master Table & Alter Column Schema Editing
+│   │   ├── IntegrationTab.jsx          # ETL & Visualisasi Star Schema
+│   │   ├── AnalysisTab.jsx             # Simulator OLAP Pivot Table
+│   │   ├── MiningTab.jsx               # Data Mining (Regresi & Korelasi)
+│   │   ├── ReportingTab.jsx            # Laporan Dashboard & Grafik Interaktif
+│   │   ├── ClusteringTab.jsx           # Scatter Plot K-Means & Profile Centroid
+│   │   └── AlgorithmModal.jsx          # Modal Formula Algoritma & Kode Python
 │   │
-│   └── 📁 utils/                   ← Fungsi logika/kalkulasi
-│       ├── etl.js                  ← Proses ETL & transformasi data
-│       ├── clustering.js           ← Algoritma K-Means
-│       ├── mining.js               ← Forecasting & korelasi
-│       └── download.js             ← Helper download PNG & CSV
+│   └── utils/                          # Algoritma Client-side & Helper
+│       ├── etl.js                      # Cleansing & SQL Exporter
+│       ├── clustering.js               # Algoritma K-Means Client-side
+│       ├── mining.js                   # Regresi OLS & Korelasi Pearson
+│       └── download.js                 # Export PNG & CSV
 │
-├── 📁 public/                      ← File statis (dataset sampel)
-├── 📁 sql/                         ← Script SQL Star Schema
-├── 📁 ssis/                        ← Desain SSIS (ETL Microsoft)
-├── 📁 ssas/                        ← Desain SSAS (Cube)
-├── 📁 ssrs/                        ← Desain SSRS (Report)
-│
-├── 📄 package.json                 ← Konfigurasi Node.js
-├── 📄 vite.config.js               ← Konfigurasi build
-├── 📄 README.md                    ← Dokumentasi proyek
-└── 📄 PLANNING.md                  ← Dokumen perencanaan ini
+├── index.html                           # Entry point HTML5 & SEO Metadata
+├── package.json                         # Dependensi NPM (React, Chart.js, Vite)
+└── vite.config.js                       # Konfigurasi Build Vite
 ```
 
 ---
 
-## 📅 BAGIAN 5 — TIMELINE PENGERJAAN
+## 🛠️ BAGIAN 7 — REKOMENDASI PENINGKATAN & BEST PRACTICES UNTUK PRESENTASI DOSEN
 
-```mermaid
-gantt
-    title Rencana Pengembangan Proyek BI
-    dateFormat  YYYY-MM-DD
-    axisFormat  %d %b
+Aplikasi dan dokumentasi ini telah dirancang untuk menangkal semua celah pertanyaan dosen penguji skripsi/tugas akhir:
 
-    section Perencanaan
-    Desain Star Schema & Flowchart    :done, w1a, 2026-07-17, 3d
-    Buat Dokumen Perencanaan          :done, w1b, after w1a, 4d
+1. **Jawab Celah Identitas Master Data:**  
+   *Dosen*: "Kenapa dinamakan Master Table padahal isinya data transaksi?"  
+   *Jawaban*: "Tabel ini dinamakan **Master Table Transaksi Penjualan** karena berfungsi sebagai *Single Source of Truth (SSOT)* — pusat penggabungan seluruh tabel transaksional yang sudah dibersihkan oleh pipeline ETL sebelum didistribusikan ke kubus OLAP dan klastering."
 
-    section ETL dan Analisis
-    Modul ETL dan Integration Services :done, w2a, 2026-07-24, 3d
-    OLAP Pivot Table                   :done, w2b, after w2a, 4d
+2. **Jawab Celah Fleksibilitas Skema:**  
+   *Dosen*: "Bagaimana kalau struktur kolom dari file CSV beda penamaannya?"  
+   *Jawaban*: "Sistem kami dilengkapi dengan fitur **Dynamic Schema Alteration (`ALTER TABLE RENAME COLUMN`)**. Nama header kolom dapat diubah secara *real-time* lewat tombol pensil (Edit Header), dan seluruh dataset 15.000 baris akan otomatis menyesuaikan diri tanpa merusak alur analitis."
 
-    section Mining dan Clustering
-    Forecasting dan Korelasi          :done, w3a, 2026-07-31, 3d
-    K-Means Clustering                :done, w3b, after w3a, 4d
+3. **Jawab Celah Algoritma Data Mining:**  
+   *Dosen*: "Bagaimana cara kerja K-Means dan Regresi di browser tanpa server?"  
+   *Jawaban*: "Algoritma dieksekusi 100% *client-side* menggunakan JavaScript ES6+ dengan metode *Min-Max Normalization* dan *Euclidean Distance* untuk K-Means, serta *Ordinary Least Squares (OLS)* untuk regresi linear. Pengguna juga dapat menekan tombol **Modal Algoritma** untuk melihat kode versi Python scikit-learn nya."
 
-    section Revisi & Fitur Tambahan
-    Landing Page & Login System       :done, w4a, 2026-07-27, 1d
-    CRUD Data Management              :done, w4b, 2026-07-27, 1d
-    Executive Dashboard (KPI+Charts)  :done, w4c, 2026-07-27, 1d
-    Peningkatan 5 Teknik BI           :done, w4d, 2026-07-27, 1d
-
-    section Final
-    Testing dan Presentasi Akhir      :active, w5a, 2026-07-27, 1d
-```
-
-| Minggu | Fokus | Status |
-|--------|-------|--------|
-| **Minggu 1** | Perencanaan, desain database, buat dokumen | ✅ Selesai |
-| **Minggu 2** | ETL pipeline, OLAP Pivot Table interaktif | ✅ Selesai |
-| **Minggu 3** | Forecasting, korelasi, K-Means clustering | ✅ Selesai |
-| **Minggu 4 (Revisi)** | Landing page, CRUD, Executive Dashboard, peningkatan BI | ✅ Selesai |
-| **Presentasi** | 🔄 Berjalan |
+4. **Jawab Celah Keamanan & Akses:**  
+   *Dosen*: "Siapa saja yang boleh mengubah data?"  
+   *Jawaban*: "Sistem memiliki **Role-Based Access Control (RBAC)**. Mode Admin memiliki izin full CRUD & Schema Alteration, sedangkan mode User/Eksekutif hanya memiliki akses *read-only* untuk melihat KPI dan laporan grafik."
 
 ---
 
-## ⚙️ BAGIAN 6 — TEKNOLOGI YANG DIGUNAKAN
+## ⚙️ BAGIAN 8 — TEKNOLOGI & LIVE DEPLOYMENT
 
-| Teknologi | Fungsi |
-|-----------|--------|
-| **React.js 18** | Framework UI komponen |
-| **Vite 6** | Build tool & dev server cepat |
-| **Chart.js 4** | Render grafik (Line, Bar, Scatter, Doughnut) |
-| **react-chartjs-2** | Wrapper React untuk Chart.js |
-| **PapaParse** | Parse file CSV langsung di browser |
-| **Vanilla CSS** | Styling & dark mode premium (Glassmorphism) |
-| **JavaScript ES6+** | Logika algoritma (K-Means, regresi linear, ETL) |
-| **Netlify** | Hosting & deployment (CD otomatis dari GitHub) |
-
-> 💡 **Catatan:** Semua proses berjalan 100% di browser (client-side). Tidak membutuhkan server backend atau database eksternal. Ini berarti aplikasi sangat cepat, portable, dan gratis untuk di-hosting.
+| Komponen | Teknologi | Keterangan |
+|----------|-----------|------------|
+| **Frontend UI** | React.js 18 + Vite 6 | SPA (Single Page Application) super cepat |
+| **Styling & Theme** | Vanilla CSS 3 | Custom Glassmorphism Dark Mode |
+| **Grafik & Visual** | Chart.js 4 + react-chartjs-2 | Line, Bar, Doughnut, Scatter Chart |
+| **Pembersihan Data** | PapaParse + JavaScript ES6+ | Real-time CSV Parsing & Cleansing |
+| **Database OLTP & DW** | T-SQL (Microsoft SQL Server) & SQLite | Script pembuatan `sql/` & `generate_star_schema.py` |
+| **Hosting & CI/CD** | GitHub Pages | Automated deployment dari branch `gh-pages` |
 
 ---
 
-## 🎯 BAGIAN 7 — RINGKASAN UNTUK PRESENTASI
-
-Jika dosen bertanya *"Jelaskan proyekmu secara singkat"*, gunakan kalimat ini:
-
-> *"Proyek ini adalah **website Business Intelligence** berbasis browser yang mengolah data penjualan CSV secara real-time. Sistemnya memiliki **Landing Page** modern, sistem **login berbasis role** (Admin & User), dan **5 teknik BI utama**: ETL untuk pembersihan data, OLAP Pivot Table untuk analisis multidimensi, Data Mining untuk prediksi dan korelasi, Reporting Dashboard dengan grafik interaktif, dan K-Means Clustering untuk segmentasi pelanggan. Admin juga dapat melakukan **CRUD** langsung terhadap data. Semua hasilnya bisa diunduh langsung sebagai file PNG atau CSV. Aplikasi di-hosting di Netlify secara gratis."*
-
----
-
-*Dokumen ini di-update pada: 2026-07-27 — Versi Final (Revisi Lengkap)*
+*Dokumen Perencanaan ini di-update secara komprehensif pada: 2026-07-29 — Versi Final (Siap Sidang & Presentasi)*
