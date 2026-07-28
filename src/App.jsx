@@ -360,8 +360,7 @@ function App() {
         { key: 'analysis', label: 'Analysis Services', icon: '📊' },
         { key: 'mining', label: 'Data Mining', icon: '⛏️' },
         { key: 'reporting', label: 'Reporting Services', icon: '📈' },
-        { key: 'clustering', label: 'Clustering Support', icon: '🎯' },
-        { key: 'datamanagement', label: 'Data Management', icon: '📝' }
+        { key: 'clustering', label: 'Clustering Support', icon: '🎯' }
       );
     } else {
       allTabs.push({ key: 'csv-guide', label: 'Panduan Format CSV', icon: '📖' });
@@ -730,15 +729,6 @@ function App() {
                 <LockedTab tabKey="clustering" tabName="Clustering Support" />
               )}
             </div>
-          )}
-
-          {/* Data Management Tab */}
-          {activeTab === 'datamanagement' && isAdmin && (
-            <DataManagementTab 
-              data={rawData} 
-              onUpdateData={handleUpdateData} 
-              onDeleteData={handleDeleteData} 
-            />
           )}
 
           {/* Admin Monetization Tab */}
