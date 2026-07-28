@@ -4,6 +4,25 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  position: relative;
+}
+
+/* ── Rename Column Toast Log ── */
+.mt-rename-log-toast {
+  background: rgba(16, 185, 129, 0.2);
+  border: 1px solid #10b981;
+  color: #34d399;
+  border-radius: 8px;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.2);
+  animation: slideInDown 0.3s ease;
+}
+
+@keyframes slideInDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }
 
 /* ── System Health Bar ── */
@@ -436,12 +455,33 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
+  gap: 0.4rem;
   margin-bottom: 0.3rem;
 }
 
-.mt-th-content:hover { color: #38bdf8; }
-.mt-th-active .mt-th-content { color: #38bdf8 !important; }
+.mt-th-label {
+  cursor: pointer;
+  flex: 1;
+}
+
+.mt-th-label:hover { color: #38bdf8; }
+.mt-th-active .mt-th-label { color: #38bdf8 !important; }
+
+/* Rename Column Button ✏️ */
+.mt-btn-rename-col {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.75rem;
+  opacity: 0.4;
+  transition: all 0.2s;
+  padding: 0.15rem;
+}
+
+.mt-btn-rename-col:hover {
+  opacity: 1;
+  transform: scale(1.25);
+}
 
 .mt-col-filter-input {
   width: 100%;
@@ -568,7 +608,7 @@
 .mt-empty h3 { font-size: 1.3rem; color: #f1f5f9; margin-bottom: 0.5rem; }
 .mt-empty p { font-size: 0.9rem; color: rgba(241, 245, 249, 0.5); max-width: 400px; margin: 0 auto; }
 
-/* ── Add Transaction Modal Form ── */
+/* ── Add Transaction & Rename Modals ── */
 .mt-modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

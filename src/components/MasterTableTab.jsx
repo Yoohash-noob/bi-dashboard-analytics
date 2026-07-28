@@ -16,6 +16,11 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedRowIndexes, setSelectedRowIndexes] = useState(new Set());
   
+  // State for Column Renaming (ALTER TABLE RENAME COLUMN)
+  const [renameModal, setRenameModal] = useState(null); // { oldColName, newColName }
+  const [renameError, setRenameError] = useState('');
+  const [renameLog, setRenameLog] = useState('');
+
   const ROWS_PER_PAGE = 15;
 
   const allColumns = useMemo(() => {
@@ -30,7 +35,6 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
     return init;
   });
 
-  // Ensure visibleColumns updates if allColumns changes
   useMemo(() => {
     if (allColumns.length > 0 && Object.keys(visibleColumns).length === 0) {
       const init = {};
@@ -70,9 +74,10 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
     if (!cleanData) return [];
     
     return cleanData.filter(row => {
-      // Date Range Filter
+      // Date Range Filter (checks any date field available)
       if (startDate || endDate) {
-        const orderDateStr = String(row.Order_Date || '');
+        const dateKey = Object.keys(row).find(k => k.toLowerCase().includes('date') || k.toLowerCase().includes('tanggal')) || 'Order_Date';
+        const orderDateStr = String(row[dateKey] || '');
         if (orderDateStr) {
           if (startDate && orderDateStr < startDate) return false;
           if (endDate && orderDateStr > endDate) return false;
@@ -110,9 +115,13 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
     let totalQty = 0;
 
     filteredData.forEach(row => {
-      totalRevenue += Number(row.Revenue || row[' Revenue ']) || 0;
-      totalProfit += Number(row.Profit || row[' Profit ']) || 0;
-      totalQty += Number(row.Quantity || row['Quantity']) || 0;
+      const revKey = Object.keys(row).find(k => k.toLowerCase().includes('revenue') || k.toLowerCase().includes('omset')) || 'Revenue';
+      const profKey = Object.keys(row).find(k => k.toLowerCase().includes('profit') || k.toLowerCase().includes('laba')) || 'Profit';
+      const qtyKey = Object.keys(row).find(k => k.toLowerCase().includes('quantity') || k.toLowerCase().includes('jumlah')) || 'Quantity';
+
+      totalRevenue += Number(row[revKey]) || 0;
+      totalProfit += Number(row[profKey]) || 0;
+      totalQty += Number(row[qtyKey]) || 0;
     });
 
     const avgRevenue = filteredData.length > 0 ? totalRevenue / filteredData.length : 0;
@@ -194,6 +203,73 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
     }
   };
 
+  // ── RENAME COLUMN FUNCTION (ALTER TABLE RENAME COLUMN) ──
+  const openRenameModal = (colName) => {
+    setRenameModal({ oldColName: colName, newColName: colName });
+    setRenameError('');
+  };
+
+  const handleRenameColumnSubmit = (e) => {
+    e.preventDefault();
+    if (!renameModal) return;
+    const { oldColName, newColName } = renameModal;
+    const trimmed = newColName.trim();
+
+    if (!trimmed) {
+      setRenameError('Nama kolom baru tidak boleh kosong!');
+      return;
+    }
+    if (trimmed !== oldColName && allColumns.includes(trimmed)) {
+      setRenameError(`Kolom dengan nama "${trimmed}" sudah ada! Gunakan nama unik lain.`);
+      return;
+    }
+
+    if (trimmed === oldColName) {
+      setRenameModal(null);
+      return;
+    }
+
+    // Update dataset objects key from oldColName to trimmed
+    const updatedData = cleanData.map(row => {
+      const newRow = {};
+      Object.keys(row).forEach(key => {
+        if (key === oldColName) {
+          newRow[trimmed] = row[key];
+        } else {
+          newRow[key] = row[key];
+        }
+      });
+      return newRow;
+    });
+
+    // Update columnFilters key if exists
+    if (columnFilters[oldColName]) {
+      const newFilters = { ...columnFilters };
+      newFilters[trimmed] = newFilters[oldColName];
+      delete newFilters[oldColName];
+      setColumnFilters(newFilters);
+    }
+
+    // Update visibleColumns key
+    const newVis = { ...visibleColumns };
+    newVis[trimmed] = newVis[oldColName] !== false;
+    delete newVis[oldColName];
+    setVisibleColumns(newVis);
+
+    // Update sortCol if active
+    if (sortCol === oldColName) {
+      setSortCol(trimmed);
+    }
+
+    // Execute update
+    onUpdateCleanData(updatedData);
+
+    const logMsg = `SQL ALTER TABLE: Kolom "${oldColName}" berhasil diubah namanya menjadi "${trimmed}" di seluruh dataset.`;
+    setRenameLog(logMsg);
+    setRenameModal(null);
+    setTimeout(() => setRenameLog(''), 6000);
+  };
+
   const startEdit = (globalIdx, col, value) => {
     setEditCell({ rowIdx: globalIdx, col });
     setEditValue(String(value ?? ''));
@@ -234,28 +310,32 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    const newId = cleanData.length > 0 ? Math.max(...cleanData.map(d => Number(d.Order_ID) || 0)) + 1 : 1;
+    const idKey = allColumns.find(k => k.toLowerCase().includes('id')) || allColumns[0] || 'Order_ID';
+    const newId = cleanData.length > 0 ? Math.max(...cleanData.map(d => Number(d[idKey]) || 0)) + 1 : 1;
     const qty = Number(formData.Quantity) || 1;
     const price = Number(formData.Unit_Price) || 0;
     const rev = qty * price;
     const prof = Number(formData.Profit) || 0;
 
-    const newRow = {
-      Order_ID: newId,
-      Order_Date: formData.Order_Date,
-      Customer_Name: formData.Customer_Name || 'Pelanggan Baru',
-      City: formData.City || 'Jakarta',
-      State: formData.State || 'DKI Jakarta',
-      Region: formData.Region,
-      Country: formData.Country,
-      Category: formData.Category,
-      Sub_Category: formData.Sub_Category,
-      Product_Name: formData.Product_Name || 'Produk Baru',
-      Quantity: qty,
-      Unit_Price: price,
-      Revenue: rev,
-      Profit: prof
-    };
+    const newRow = {};
+    allColumns.forEach(col => {
+      const cLow = col.toLowerCase();
+      if (cLow.includes('id')) newRow[col] = newId;
+      else if (cLow.includes('date') || cLow.includes('tanggal')) newRow[col] = formData.Order_Date;
+      else if (cLow.includes('customer') || cLow.includes('pelanggan')) newRow[col] = formData.Customer_Name || 'Pelanggan Baru';
+      else if (cLow.includes('city') || cLow.includes('kota')) newRow[col] = formData.City || 'Jakarta';
+      else if (cLow.includes('state') || cLow.includes('provinsi')) newRow[col] = formData.State || 'DKI Jakarta';
+      else if (cLow.includes('region') || cLow.includes('wilayah')) newRow[col] = formData.Region;
+      else if (cLow.includes('country') || cLow.includes('negara')) newRow[col] = formData.Country;
+      else if (cLow.includes('sub_category') || cLow.includes('sub')) newRow[col] = formData.Sub_Category;
+      else if (cLow.includes('category') || cLow.includes('kategori')) newRow[col] = formData.Category;
+      else if (cLow.includes('product') || cLow.includes('produk')) newRow[col] = formData.Product_Name || 'Produk Baru';
+      else if (cLow.includes('quantity') || cLow.includes('jumlah')) newRow[col] = qty;
+      else if (cLow.includes('price') || cLow.includes('harga')) newRow[col] = price;
+      else if (cLow.includes('revenue') || cLow.includes('omset')) newRow[col] = rev;
+      else if (cLow.includes('profit') || cLow.includes('laba')) newRow[col] = prof;
+      else newRow[col] = '-';
+    });
 
     const newData = [newRow, ...cleanData];
     onUpdateCleanData(newData);
@@ -322,6 +402,13 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
 
   return (
     <div className="mt-container">
+      {/* Toast Notification Log for Column Rename */}
+      {renameLog && (
+        <div className="mt-rename-log-toast">
+          <span>✅ {renameLog}</span>
+        </div>
+      )}
+
       {/* System Integrity & Health Bar */}
       <div className="mt-health-bar">
         <div className="mt-health-item">
@@ -329,7 +416,7 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
           <span>STATUS DATABASE: <strong>ONLINE & SYNCHRONIZED</strong></span>
         </div>
         <div className="mt-health-item">
-          <span>Integritas ETL: <strong>100% Valid</strong></span>
+          <span>Integritas Skema: <strong>SQL DDL Ready (ALTER COLUMN Enabled)</strong></span>
         </div>
         <div className="mt-health-item">
           <span>Penyimpanan: <strong>localStorage Active</strong></span>
@@ -345,8 +432,8 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
           <div className="mt-guide-title">
             <span className="mt-guide-icon">🎓</span>
             <div>
-              <h3>Penjelasan Akademik: Fungsi Master Table & Sistem Manajerial Data</h3>
-              <p className="mt-guide-subtitle">Pusat Pengelolaan Data Tunggal (Single Source of Truth) untuk Sidang BI</p>
+              <h3>Penjelasan Akademik: Fungsi Master Table & Alter Column Schema</h3>
+              <p className="mt-guide-subtitle">Pusat Pengelolaan Data Tunggal (Single Source of Truth) & Dynamic Schema Alteration</p>
             </div>
           </div>
           <button className="mt-guide-toggle" onClick={() => setShowGuide(!showGuide)}>
@@ -365,16 +452,16 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
               </div>
 
               <div className="mt-guide-card">
-                <h4>⚡ Operasi CRUD & Batch Manipulation</h4>
+                <h4>✏️ Dynamic Schema Alteration (Rename Column)</h4>
                 <p>
-                  Sistem mendukung <strong>Insert Modal</strong> (tambah data valid), <strong>Inline Double-Click Edit</strong> (ubah nilai sel), <strong>Single / Batch Delete</strong> (hapus baris pilihan sekaligus), serta <strong>Multi-Filter Search & Date Range Slicing</strong>.
+                  Mengimplementasikan fitur <strong><code>ALTER TABLE RENAME COLUMN</code></strong> seperti di database SQL. Klik tombol pensil ✏️ di judul header kolom mana saja untuk mengganti nama kolom (misal: <code>Order_Date</code> ➔ <code>Tanggal_Order</code>) secara real-time.
                 </p>
               </div>
 
               <div className="mt-guide-card">
-                <h4>🛡️ Konsistensi & Re-calculation Otomatis</h4>
+                <h4>⚡ Operasi CRUD & Batch Manipulation</h4>
                 <p>
-                  Setiap kali Anda mengedit, menambah, atau menghapus baris di Master Table, seluruh grafik dan analisis di 5 tab BI lainnya secara otomatis melakukan perhitungan ulang secara konsisten dan tersimpan permanen di browser.
+                  Mendukung <strong>Insert Modal</strong> (tambah data valid), <strong>Inline Double-Click Edit</strong> (ubah nilai sel), <strong>Single / Batch Delete</strong> (hapus baris pilihan sekaligus), serta <strong>Multi-Filter Search & Date Range Slicing</strong>.
                 </p>
               </div>
             </div>
@@ -463,7 +550,7 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
                         checked={visibleColumns[col] !== false}
                         onChange={() => toggleColumnVisibility(col)}
                       />
-                      <span>{col.replace(/_/g, ' ')}</span>
+                      <span>{col}</span>
                     </label>
                   ))}
                 </div>
@@ -471,7 +558,7 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
             )}
           </div>
 
-          {/* Bulk Delete Button if Selection > 0 */}
+          {/* Bulk Delete Button */}
           {selectedRowIndexes.size > 0 && (
             <button className="mt-btn mt-btn-danger" onClick={deleteSelectedRows}>
               🗑️ Hapus ({selectedRowIndexes.size}) Baris
@@ -513,11 +600,21 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
                   key={col}
                   className={`mt-th-sortable ${sortCol === col ? 'mt-th-active' : ''}`}
                 >
-                  <div className="mt-th-content" onClick={() => handleSort(col)}>
-                    <span>{col.replace(/_/g, ' ')}</span>
-                    {sortCol === col && (
-                      <span className="mt-sort-arrow">{sortDir === 'asc' ? ' ▲' : ' ▼'}</span>
-                    )}
+                  <div className="mt-th-content">
+                    <span onClick={() => handleSort(col)} className="mt-th-label" title="Klik untuk mengurutkan (sort)">
+                      {col}
+                      {sortCol === col && (
+                        <span className="mt-sort-arrow">{sortDir === 'asc' ? ' ▲' : ' ▼'}</span>
+                      )}
+                    </span>
+                    <button
+                      type="button"
+                      className="mt-btn-rename-col"
+                      onClick={(e) => { e.stopPropagation(); openRenameModal(col); }}
+                      title={`Ubah nama kolom "${col}" (ALTER TABLE RENAME COLUMN)`}
+                    >
+                      ✏️
+                    </button>
                   </div>
                   {/* Column-level Filter Input */}
                   <input
@@ -558,7 +655,8 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
                       const isEditing = editCell && editCell.rowIdx === globalIdx && editCell.col === col;
                       const rawVal = row[col];
                       let displayVal = rawVal ?? '';
-                      if (['Revenue', 'Profit'].includes(col) && typeof rawVal === 'number') {
+                      const isMoneyCol = ['revenue', 'profit', 'omset', 'laba', 'keuntungan'].some(k => col.toLowerCase().includes(k));
+                      if (isMoneyCol && typeof rawVal === 'number') {
                         displayVal = formatIDR(rawVal);
                       }
 
@@ -641,8 +739,60 @@ const MasterTableTab = ({ cleanData, onUpdateCleanData }) => {
 
       {/* Footer Hints */}
       <div className="mt-hint">
-        💡 <strong>Petunjuk Operasional:</strong> Lakukan <strong>Double-Click</strong> pada sel mana saja untuk mengedit. Centang kotak di samping nomor baris untuk menghapus banyak baris sekaligus (Bulk Delete). Gunakan filter tanggal & filter kolom untuk menyaring data.
+        💡 <strong>Petunjuk Operasional:</strong> Klik <strong>✏️ ikon pensil di judul kolom</strong> untuk mengganti nama kolom (SQL ALTER TABLE). Lakukan <strong>Double-Click pada sel</strong> untuk mengedit nilainya. Centang kotak baris untuk <strong>Bulk Delete</strong>.
       </div>
+
+      {/* ── MODAL: Rename Column (ALTER TABLE RENAME COLUMN) ── */}
+      {renameModal && (
+        <div className="mt-modal-overlay">
+          <div className="mt-modal-content" style={{ maxWidth: '450px' }}>
+            <div className="mt-modal-header">
+              <h3>✏️ Ubah Nama Kolom (Rename Header)</h3>
+              <button className="mt-modal-close" onClick={() => setRenameModal(null)}>✕</button>
+            </div>
+            <form onSubmit={handleRenameColumnSubmit} className="mt-modal-form">
+              <p style={{ fontSize: '0.82rem', color: '#cbd5e1', marginBottom: '1rem' }}>
+                Perubahan nama kolom ini akan mengeksekusi operasi <strong><code>ALTER TABLE RENAME COLUMN</code></strong> secara otomatis pada seluruh {cleanData.length.toLocaleString('id-ID')} baris data.
+              </p>
+              <div className="mt-form-group" style={{ marginBottom: '1rem' }}>
+                <label>Nama Kolom Lama (Old Name)</label>
+                <input
+                  type="text"
+                  disabled
+                  value={renameModal.oldColName}
+                  style={{ opacity: 0.6, background: 'rgba(255,255,255,0.02)' }}
+                />
+              </div>
+              <div className="mt-form-group" style={{ marginBottom: '1rem' }}>
+                <label>Nama Kolom Baru (New Name)</label>
+                <input
+                  type="text"
+                  required
+                  autoFocus
+                  placeholder="Masukkan nama kolom baru..."
+                  value={renameModal.newColName}
+                  onChange={e => setRenameModal({ ...renameModal, newColName: e.target.value })}
+                />
+              </div>
+
+              {renameError && (
+                <div style={{ color: '#f87171', fontSize: '0.8rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.5rem', borderRadius: '6px' }}>
+                  ⚠️ {renameError}
+                </div>
+              )}
+
+              <div className="mt-modal-actions">
+                <button type="button" className="mt-btn mt-btn-clear-filter" onClick={() => setRenameModal(null)}>
+                  Batal
+                </button>
+                <button type="submit" className="mt-btn mt-btn-add">
+                  💾 Simpan Perubahan Header
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* ── MODAL: Form Tambah Transaksi Baru ── */}
       {showAddModal && (
