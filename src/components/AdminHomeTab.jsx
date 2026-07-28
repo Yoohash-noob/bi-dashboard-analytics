@@ -34,6 +34,7 @@ const AdminHomeTab = ({
   tokens, 
   accountsCount, 
   onFileUpload, 
+  loadSampleData,
   uploadError,
   username,
   resetData,
@@ -193,6 +194,14 @@ const AdminHomeTab = ({
                 <p className="dropzone-subtext">Supported formats: CSV, XLSX (Data Penjualan)</p>
               </div>
               {uploadError && <div style={{ marginTop: '1rem', color: '#f87171', fontSize: '0.9rem', textAlign: 'center' }}>⚠️ {uploadError}</div>}
+              <div style={{ textAlign: 'center', marginTop: '1rem' }}>
+                <button 
+                  onClick={loadSampleData} 
+                  style={{ background: 'rgba(78,168,222,0.15)', color: '#4ea8de', border: '1px solid rgba(78,168,222,0.3)', padding: '0.6rem 1.25rem', borderRadius: '8px', cursor: 'pointer', fontWeight: '600', fontSize: '0.85rem' }}
+                >
+                  📦 Muat Data Sampel 15K
+                </button>
+              </div>
             </div>
           ) : (
             <div className="glass-card-neon">

@@ -1,0 +1,365 @@
+/* ── Master Table Tab Styles ── */
+
+.mt-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Header */
+.mt-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mt-title-area {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mt-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.mt-count {
+  font-size: 0.85rem;
+  color: rgba(241, 245, 249, 0.5);
+  background: rgba(78, 168, 222, 0.12);
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(78, 168, 222, 0.2);
+}
+
+.mt-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Search */
+.mt-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.mt-search-icon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.mt-search {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.55rem 2.25rem 0.55rem 2.25rem;
+  color: #f1f5f9;
+  font-size: 0.85rem;
+  width: 260px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+}
+
+.mt-search:focus {
+  outline: none;
+  border-color: #4ea8de;
+  box-shadow: 0 0 0 3px rgba(78, 168, 222, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.mt-search::placeholder {
+  color: rgba(241, 245, 249, 0.35);
+}
+
+.mt-search-clear {
+  position: absolute;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: rgba(241, 245, 249, 0.5);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0.25rem;
+  transition: color 0.2s;
+}
+
+.mt-search-clear:hover {
+  color: #ec4899;
+}
+
+/* Buttons */
+.mt-btn {
+  padding: 0.55rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(8px);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.mt-btn-export {
+  background: rgba(78, 168, 222, 0.12);
+  color: #4ea8de;
+  border-color: rgba(78, 168, 222, 0.25);
+}
+
+.mt-btn-export:hover {
+  background: rgba(78, 168, 222, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(78, 168, 222, 0.2);
+}
+
+.mt-btn-add {
+  background: rgba(16, 185, 129, 0.12);
+  color: #10b981;
+  border-color: rgba(16, 185, 129, 0.25);
+}
+
+.mt-btn-add:hover {
+  background: rgba(16, 185, 129, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+}
+
+/* Table wrapper */
+.mt-table-wrapper {
+  overflow-x: auto;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(12px);
+}
+
+.mt-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+
+.mt-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.mt-table th {
+  background: rgba(15, 23, 42, 0.9);
+  color: rgba(241, 245, 249, 0.7);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.5px;
+  padding: 0.75rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  user-select: none;
+}
+
+.mt-th-sortable {
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.mt-th-sortable:hover {
+  color: #4ea8de;
+}
+
+.mt-th-active {
+  color: #4ea8de !important;
+}
+
+.mt-sort-arrow {
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+.mt-th-num {
+  width: 45px;
+  text-align: center;
+}
+
+.mt-th-actions {
+  width: 55px;
+  text-align: center;
+}
+
+/* Table body */
+.mt-table td {
+  padding: 0.6rem 0.65rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: rgba(241, 245, 249, 0.85);
+  transition: background 0.15s;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mt-row-even {
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.mt-row-odd {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.mt-table tbody tr:hover {
+  background: rgba(78, 168, 222, 0.08) !important;
+}
+
+.mt-td-num {
+  text-align: center;
+  color: rgba(241, 245, 249, 0.4);
+  font-size: 0.75rem;
+}
+
+.mt-td-actions {
+  text-align: center;
+}
+
+.mt-td-editing {
+  padding: 0.2rem 0.3rem !important;
+}
+
+/* Edit input */
+.mt-edit-input {
+  width: 100%;
+  background: rgba(78, 168, 222, 0.1);
+  border: 1px solid #4ea8de;
+  border-radius: 4px;
+  padding: 0.35rem 0.5rem;
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  outline: none;
+}
+
+/* Delete button */
+.mt-btn-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  opacity: 0.4;
+  transition: all 0.2s;
+  padding: 0.2rem;
+}
+
+.mt-btn-delete:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Pagination */
+.mt-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.mt-page-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  color: rgba(241, 245, 249, 0.7);
+  padding: 0.4rem 0.7rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.mt-page-btn:hover:not(:disabled) {
+  background: rgba(78, 168, 222, 0.15);
+  border-color: rgba(78, 168, 222, 0.3);
+  color: #4ea8de;
+}
+
+.mt-page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.mt-page-active {
+  background: rgba(78, 168, 222, 0.2) !important;
+  border-color: #4ea8de !important;
+  color: #4ea8de !important;
+  font-weight: 700;
+}
+
+.mt-page-info {
+  font-size: 0.8rem;
+  color: rgba(241, 245, 249, 0.45);
+  margin-left: 0.75rem;
+}
+
+/* Hint */
+.mt-hint {
+  font-size: 0.78rem;
+  color: rgba(241, 245, 249, 0.4);
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* Empty state */
+.mt-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(241, 245, 249, 0.6);
+}
+
+.mt-empty-icon {
+  font-size: 3.5rem;
+  margin-bottom: 1rem;
+}
+
+.mt-empty h3 {
+  font-size: 1.3rem;
+  color: #f1f5f9;
+  margin-bottom: 0.5rem;
+}
+
+.mt-empty p {
+  font-size: 0.9rem;
+  color: rgba(241, 245, 249, 0.5);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mt-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mt-actions {
+    flex-direction: column;
+  }
+
+  .mt-search {
+    width: 100%;
+  }
+
+  .mt-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

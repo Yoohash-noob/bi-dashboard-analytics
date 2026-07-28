@@ -15,6 +15,8 @@ import MiningTab from './components/MiningTab';
 import ReportingTab from './components/ReportingTab';
 import ClusteringTab from './components/ClusteringTab';
 import CsvGuideTab from './components/CsvGuideTab';
+import MasterTableTab from './components/MasterTableTab';
+import PlanningTab from './components/PlanningTab';
 import ErrorBanner from './components/ErrorBanner';
 import AlgorithmModal from './components/AlgorithmModal';
 import DescriptionModal from './components/DescriptionModal';
@@ -55,9 +57,9 @@ function App() {
   // Temporarily unlocked tabs for normal users in this session
   const [unlockedTabs, setUnlockedTabs] = useState(new Set());
 
-  // Data state with session persistence
+  // Data state with localStorage persistence (survives browser close)
   const [rawData, setRawData] = useState(() => {
-    const saved = sessionStorage.getItem('bi_raw_data');
+    const saved = localStorage.getItem('bi_raw_data');
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -67,7 +69,17 @@ function App() {
     }
     return null;
   });
-  const [cleanData, setCleanData] = useState(null);
+  const [cleanData, setCleanData] = useState(() => {
+    const saved = localStorage.getItem('bi_clean_data');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
   
   // Set default tab: Admin defaults to command center, User defaults to analysis
   const [activeTab, setActiveTab] = useState(() => {
@@ -137,12 +149,18 @@ function App() {
 
   const processETL = (data) => {
     try {
-      sessionStorage.setItem('bi_raw_data', JSON.stringify(data));
+      localStorage.setItem('bi_raw_data', JSON.stringify(data));
     } catch (e) {
-      console.warn("Could not save to sessionStorage", e);
+      console.warn("Could not save rawData to localStorage", e);
     }
     const result = runETL(data);
-    setCleanData(result?.cleanedData || data);
+    const cleaned = result?.cleanedData || data;
+    setCleanData(cleaned);
+    try {
+      localStorage.setItem('bi_clean_data', JSON.stringify(cleaned));
+    } catch (e) {
+      console.warn("Could not save cleanData to localStorage", e);
+    }
     setEtlLogs(result?.logs || []);
     setUploadError('');
     if (user && user.role === 'admin') {
@@ -150,11 +168,10 @@ function App() {
     }
   };
 
-  // Restore cleanData and ETL logs if rawData was loaded from session
+  // Restore ETL logs if data was loaded from localStorage
   useEffect(() => {
-    if (rawData && !cleanData) {
+    if (rawData && cleanData && etlLogs.length === 0) {
       const result = runETL(rawData);
-      setCleanData(result?.cleanedData || rawData);
       setEtlLogs(result?.logs || []);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -215,7 +232,8 @@ function App() {
   };
 
   const resetData = () => {
-    sessionStorage.removeItem('bi_raw_data');
+    localStorage.removeItem('bi_raw_data');
+    localStorage.removeItem('bi_clean_data');
     setRawData(null);
     setCleanData(null);
     setEtlLogs([]);
@@ -241,6 +259,16 @@ function App() {
     newData.splice(index, 1);
     setRawData(newData);
     processETL(newData);
+  };
+
+  // CRUD callback for MasterTableTab - updates cleanData and persists
+  const handleUpdateCleanData = (newCleanData) => {
+    setCleanData(newCleanData);
+    try {
+      localStorage.setItem('bi_clean_data', JSON.stringify(newCleanData));
+    } catch (e) {
+      console.warn("Could not save cleanData to localStorage", e);
+    }
   };
 
   const handleLogout = () => {
@@ -327,6 +355,7 @@ function App() {
     allTabs.push({ key: 'adminhome', label: 'Beranda Admin', icon: '🎛️' });
     if (rawData) {
       allTabs.push(
+        { key: 'master-table', label: 'Master Table', icon: '📋' },
         { key: 'integration', label: 'Integration Services', icon: '🔄' },
         { key: 'analysis', label: 'Analysis Services', icon: '📊' },
         { key: 'mining', label: 'Data Mining', icon: '⛏️' },
@@ -338,6 +367,7 @@ function App() {
       allTabs.push({ key: 'csv-guide', label: 'Panduan Format CSV', icon: '📖' });
     }
     allTabs.push(
+      { key: 'planning', label: 'Planning & Deskripsi BI', icon: '🧠' },
       { key: 'monetization', label: 'Monetisasi', icon: '💸' },
       { key: 'accounts', label: 'Manajemen Akun', icon: '👥' }
     );
@@ -345,11 +375,13 @@ function App() {
     // User POV: always show 5 BI technique tabs + userhome
     allTabs.push(
       { key: 'userhome', label: 'Beranda User', icon: '🏠' },
+      { key: 'master-table', label: 'Master Table', icon: '📋' },
       { key: 'integration', label: 'Integration Services', icon: '🔄' },
       { key: 'analysis', label: 'Analysis Services', icon: '📊' },
       { key: 'mining', label: 'Data Mining', icon: '⛏️' },
       { key: 'reporting', label: 'Reporting Services', icon: '📈' },
-      { key: 'clustering', label: 'Clustering Support', icon: '🎯' }
+      { key: 'clustering', label: 'Clustering Support', icon: '🎯' },
+      { key: 'planning', label: 'Planning & Deskripsi BI', icon: '🧠' }
     );
   }
 
@@ -413,6 +445,9 @@ function App() {
           📤 Unggah File CSV
           <input type="file" accept=".csv" onChange={handleFileUpload} style={{ display: 'none' }} />
         </label>
+        <button className="btn-description" onClick={loadSampleData} style={{ padding: '0.75rem 1.5rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+          📦 Muat Data Sampel 15K
+        </button>
       </div>
 
       {user && user.role === 'user' && (
@@ -441,7 +476,7 @@ function App() {
 
         <nav className="sidebar-nav">
           {allTabs.map(tab => {
-            const isLocked = !isTabUnlocked(tab.key) && tab.key !== 'monetization' && tab.key !== 'accounts' && tab.key !== 'adminhome';
+            const isLocked = !isTabUnlocked(tab.key) && tab.key !== 'monetization' && tab.key !== 'accounts' && tab.key !== 'adminhome' && tab.key !== 'userhome' && tab.key !== 'planning' && tab.key !== 'master-table';
             return (
               <button
                 key={tab.key}
@@ -529,6 +564,7 @@ function App() {
               accountsCount={accountsCount}
               withdrawHistory={withdrawHistory}
               onFileUpload={handleFileUpload}
+              loadSampleData={loadSampleData}
               uploadError={uploadError}
               username={user.username}
               resetData={resetData}
@@ -553,6 +589,27 @@ function App() {
           {/* CSV Guide Tab (shown when admin has no data) */}
           {activeTab === 'csv-guide' && isAdmin && (
             <CsvGuideTab />
+          )}
+
+          {/* Master Table Tab */}
+          {activeTab === 'master-table' && (
+            <div className="section-block">
+              <div className="section-header">
+                <h2 className="section-title">📋 Master Table</h2>
+              </div>
+              {!rawData ? (
+                <NoDataNotice />
+              ) : (
+                <MasterTableTab cleanData={filteredData || cleanData} onUpdateCleanData={handleUpdateCleanData} />
+              )}
+            </div>
+          )}
+
+          {/* Planning & Deskripsi BI Tab */}
+          {activeTab === 'planning' && (
+            <div className="section-block">
+              <PlanningTab />
+            </div>
           )}
 
           {/* Integration Services Tab */}
